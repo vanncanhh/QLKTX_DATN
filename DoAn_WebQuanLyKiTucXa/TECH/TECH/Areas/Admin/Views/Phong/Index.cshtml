@@ -154,11 +154,11 @@
                         {
                             if (i == 0)
                             {
-                                           <li class="nav-item"><a data-toggle="tab" href="#@item.Id" class="nav-link active custom-item" onclick="GetPhongByNha(@item.Id,this)">@item.TenNha</a></li>
+                                <li class="nav-item"><a data-toggle="tab" href="#@item.Id" class="nav-link active custom-item" onclick="GetPhongByNha(@item.Id,this)">@item.TenNha</a></li>
                             }
                             else
                             {
-                                           <li class="nav-item"><a data-toggle="tab" href="#@item.Id" class="nav-link custom-item" onclick="GetPhongByNha(@item.Id,this)">@item.TenNha</a></li>
+                                <li class="nav-item"><a data-toggle="tab" href="#@item.Id" class="nav-link custom-item" onclick="GetPhongByNha(@item.Id,this)">@item.TenNha</a></li>
                             }
                             i++;
                         }
@@ -188,7 +188,7 @@
                                         else{
                                             <p class="custom-p" style="height:35px"></p>
                                         }
-                                                                <div class='image-phong-tro' style='background-image:url(@(!string.IsNullOrEmpty(@item.HinhAnh)?src:"/image-default/default.png"))'></div>
+                                        <div class='image-phong-tro' style='background-image:url(@(!string.IsNullOrEmpty(@item.HinhAnh)?src:"/image-default/default.png"))'></div>
                                         <p class="custom-p">Chiều dài  : @item.ChieuDai</p>
                                         <p class="custom-p">Chiều rộng : @item.ChieuRong</p>
                                         <p class="custom-p">Đơn giá    : @item.DonGiaStr</p>
@@ -236,9 +236,9 @@
 <partial name="AddThanhVien" />
 
 @section Scripts{
-                        <script src="~/admin/plugins/jquery-validation/jquery.validate.min.js"></script>
-                        <script src="~/admin/phong/phong.js?v=@DateTime.Now.Ticks"></script>
-    }
+    <script src="~/admin/plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/admin/phong/phong.js?v=@DateTime.Now.Ticks"></script>
+}
 
 
 
