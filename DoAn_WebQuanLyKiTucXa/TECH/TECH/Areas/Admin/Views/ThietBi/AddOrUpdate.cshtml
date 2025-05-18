@@ -1,0 +1,65 @@
+﻿@{
+    Layout = null;
+}
+
+<div id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalTitle" class="modal fade bd-example-modal-lg" aria-modal="true">
+    <div role="document" class="modal-dialog modal-lg">
+        <form id="form-submit" action="#">
+            <input type="hidden" id="Id" name="Id" />
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h5 id="titleModal" class="modal-title white">Thêm mới thiết bị</h5>
+                    <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group has-icon-left">
+                                <label for="TenThietBi">Tên thiết bị</label>
+                                <div class="position-relative">
+                                    <input type="text" id="TenThietBi" name="TenThietBi" class="form-control custom-format" placeholder="Nhập tên thiết bị">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group has-icon-left">
+                                <label for="MaLoai">Loại thiết bị</label>
+                                <div class="position-relative">
+                                    <select id="MaLoai" name="MaLoai" class="form-select select">
+                                        <option value="">-- Chọn loại thiết bị --</option>
+                                        @if (ViewBag.LoaiThietBis != null)
+                                        {
+                                            foreach (var loai in ViewBag.LoaiThietBis)
+                                            {
+                                                <option value="@loai.Id">@loai.TenLoai</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group has-icon-left">
+                                <label for="TinhTrang">Tình trạng</label>
+                                <div class="position-relative">
+                                    <input type="text" id="TinhTrang" name="TinhTrang" class="form-control custom-format" placeholder="Nhập tình trạng thiết bị">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group has-icon-left">
+                                <label for="GhiChu">Ghi chú</label>
+                                <div class="position-relative">
+                                    <input type="text" id="GhiChu" name="GhiChu" class="form-control custom-format" placeholder="Ghi chú nếu có">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary me-1 mb-1 btn-submit-format">Thêm mới</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

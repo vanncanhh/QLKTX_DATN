@@ -41,6 +41,9 @@ builder.Services.AddScoped<IQuanHuyenRepository, QuanHuyenRepository>();
 builder.Services.AddScoped<IDichVuPhongRepository, DichVuPhongRepository>();
 builder.Services.AddScoped<IThanhVienPhongRepository, ThanhVienPhongRepository>();
 builder.Services.AddScoped<ITheKiTucXaRepository, TheKiTucXaRepository>();
+builder.Services.AddScoped<ILoaiThietBiRepository, LoaiThietBiRepository>();
+builder.Services.AddScoped<IThietBiRepository, ThietBiRepository>();
+builder.Services.AddScoped<IThietBiPhongRepository, ThietBiPhongRepository>();
 
 builder.Services.AddScoped<ITheKiTucXaService, TheKiTucXaService>();
 builder.Services.AddScoped<ILoiPhamService, LoiPhamService>();
@@ -57,6 +60,7 @@ builder.Services.AddScoped<IKhachHangService, KhachHangService>();
 builder.Services.AddScoped<IThanhPhoService, ThanhPhoService>();
 builder.Services.AddScoped<IQuanHuyenService, QuanHuyenService>();
 builder.Services.AddScoped<IPhuongXaService, PhuongXaService>();
+builder.Services.AddScoped<IThietBiService, ThietBiService>();
 
 //builder.Services.AddMemoryCache();
 
@@ -228,6 +232,16 @@ app.UseEndpoints(endpoints =>
       areaName: "Admin",
       pattern: "admin/quan-ly-siders",
       defaults: new { controller = "Siders", action = "Index" });
+    endpoints.MapAreaControllerRoute(
+      name: "siders",
+      areaName: "Admin",
+      pattern: "admin/quan-ly-thiet-bi",
+      defaults: new { controller = "ThietBi", action = "Index" });
+    endpoints.MapAreaControllerRoute(
+      name: "siders",
+      areaName: "Admin",
+      pattern: "admin/quan-ly-thiet-bi-phong",
+      defaults: new { controller = "ThietBiPhong", action = "Index" });
 
     endpoints.MapAreaControllerRoute(
      name: "chitietdonhang",

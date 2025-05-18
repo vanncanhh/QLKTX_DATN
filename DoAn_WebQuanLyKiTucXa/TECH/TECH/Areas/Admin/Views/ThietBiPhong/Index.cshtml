@@ -1,0 +1,45 @@
+﻿@{
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h3>Quản lý thiết bị phòng</h3>
+
+<div class="row mb-3">
+    <div class="col-md-4">
+        <label for="phongSelect">Chọn phòng:</label>
+        <select id="phongSelect" class="form-select">
+            <option value="">-- Chọn phòng --</option>
+            @foreach (var p in ViewBag.PhongList)
+            {
+                <option value="@p.Id">@p.TenPhong</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button id="btnSearch" class="btn btn-primary">Tìm kiếm</button>
+    </div>
+    <div class="col-md-6 d-flex justify-content-end align-items-end">
+        <button class="btn btn-success btn-addorupdate">Thêm thiết bị</button>
+    </div>
+</div>
+
+<table class="table table-striped" id="tblThietBiPhong">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>Tên thiết bị</th>
+            <th>Loại thiết bị</th>
+            <th>Ngày cấp</th>
+            <th>Ghi chú</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody id="tblData"></tbody>
+</table>
+
+<partial name="AddOrUpdate" />
+
+@section Scripts {
+    <script src="~/admin/plugins/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/admin/thietbiphong/thietbiphong.js?v=@DateTime.Now.Ticks"></script>
+}

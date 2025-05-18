@@ -1,0 +1,67 @@
+﻿@model TECH.Areas.Admin.Models.ThietBiPhongModelView
+
+@{
+    Layout = null;
+}
+
+<div id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalTitle" class="modal fade" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form id="form-submit" method="post">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 id="titleModal" class="modal-title">Thêm thiết bị phòng</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    @if (Model != null)
+                    {
+                        <input type="hidden" id="MaPhong" name="MaPhong" value="@Model.MaPhong" />
+                    }
+                    else
+                    {
+                        <input type="hidden" id="MaPhong" name="MaPhong" value="" />
+                    }
+                    <div class="mb-3">
+                        <label for="MaThietBi" class="form-label">Chọn thiết bị</label>
+                        <select id="MaThietBi" name="MaThietBi" class="form-select" required>
+                            <option value="">-- Chọn thiết bị --</option>
+                            @foreach (var tb in ViewBag.ThietBiList as List<TECH.Areas.Admin.Models.ThietBiModelView>)
+                            {
+                                var selected = tb.Id == Model?.MaThietBi ? "selected" : "";
+                                if (tb.Id == Model?.MaThietBi)
+                                {
+                                    <option value="@tb.Id" selected>@tb.TenThietBi (@tb.LoaiThietBi)</option>
+                                }
+                                else
+                                {
+                                    <option value="@tb.Id" >@tb.TenThietBi (@tb.LoaiThietBi)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="NgayCap" class="form-label">Ngày cấp</label>
+                        @{
+                            var ngayCapValue = Model?.NgayCap.HasValue == true ? Model.NgayCap.Value.ToString("yyyy-MM-dd") : "";
+                        }
+                        <input type="date" class="form-control" id="NgayCap" name="NgayCap" value="@ngayCapValue" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="GhiChu" class="form-label">Ghi chú</label>
+                        <textarea class="form-control" id="GhiChu" name="GhiChu" rows="3" maxlength="500">@Model?.GhiChu</textarea>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-submit-format">Lưu</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,7 +1,7 @@
 ﻿(function ($) {
     var self = this;
     self.Loading = function (status) {
-        debugger
+        //debugger
         if (status == "show") {
             self.html = '<div class="box-loading-page" style="position: fixed;left: 0;top: 0;width: 100%;height: 100%;z-index: 99999;display: flex;justify-content: center;align-items: center;">' +
                 '<div class="spinner-border"></div>' +

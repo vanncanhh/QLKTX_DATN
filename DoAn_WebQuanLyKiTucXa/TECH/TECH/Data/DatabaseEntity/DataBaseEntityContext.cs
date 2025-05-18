@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Website.Data.DatabaseEntity;
 namespace TECH.Data.DatabaseEntity
 {
     public class DataBaseEntityContext : DbContext
@@ -20,9 +21,13 @@ namespace TECH.Data.DatabaseEntity
         public DbSet<ThanhVienPhong> ThanhVienPhongs { set; get; }
         public DbSet<LoiPham> LoiPhams { set; get; }
         public DbSet<TheKiTucXa> TheKiTucXas { set; get; }
+        public DbSet<LoaiThietBi> LoaiThietBis { get; set; }
+        public DbSet<ThietBi> ThietBis { get; set; }
+        public DbSet<ThietBiPhong> ThietBiPhongs { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);            
         }
     }
 }
+
