@@ -462,7 +462,7 @@
                         <a href="/" style="font-weight:bold">Giới Thiệu</a>
                     </li>
                     <li>
-                        <a href="/" style="font-weight:bold">Sửa Chữa</a>
+                        <a href="/Home/Contact" style="font-weight:bold">Liên hệ</a>
                     </li>
                 </ul>
             </div>
@@ -632,6 +632,77 @@
 
 
     </script>
+    <!-- Cửa sổ Chat Hỗ Trợ -->
+    <div id="chatToggleBtn" title="Hỗ trợ" style="position: fixed; bottom: 20px; right: 20px; background: #0d4e96; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; cursor: pointer; z-index: 10001;">
+        💬
+    </div>
+
+    <div id="chatBox" style="display: none; position: fixed; bottom: 80px; right: 20px; width: 300px; background: white; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.2); z-index: 10000; font-family: Arial; padding: 10px;">
+        <div style="text-align: right;">
+            <button onclick="toggleChat()" style="background: transparent; border: none; font-size: 16px; color: #999;">✖</button>
+        </div>
+        <div id="chatMessages" style="height: 200px; overflow-y: auto; margin-bottom: 10px; font-size: 14px;"></div>
+        <input id="chatInput" type="text" placeholder="Nhập lệnh /quydinh, /lienhe..." style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;" />
+    </div>
+
+    <script>
+        const chatToggleBtn = document.getElementById('chatToggleBtn');
+        const chatBox = document.getElementById('chatBox');
+        const chatInput = document.getElementById('chatInput');
+        const chatMessages = document.getElementById('chatMessages');
+
+        chatToggleBtn.addEventListener('click', function () {
+            chatBox.style.display = chatBox.style.display === 'none' ? 'block' : 'none';
+        });
+
+        function toggleChat() {
+            chatBox.style.display = 'none';
+        }
+
+        chatInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                const command = chatInput.value.trim();
+                if (command === "") return;
+
+                addMessage("👤 Bạn", command);
+
+                let response = "";
+                switch (command.toLowerCase()) {
+                    case "/quydinh":
+                        response = `
+                                <b>📌 QUY ĐỊNH KÝ TÚC XÁ:</b><br/>
+                                - Về trước 22h hàng ngày<br/>
+                                - Giữ vệ sinh và trật tự<br/>
+                                - Không mang chất cháy nổ<br/>
+                                - Không tự ý sửa thiết bị<br/>
+                                - Vi phạm sẽ bị xử lý.
+                            `;
+                        break;
+                    case "/lienhe":
+                        response = `
+                                <b>📞 LIÊN HỆ:</b><br/>
+                                - Hotline: 0123.456.789<br/>
+                                - Email: hotro@kytucxa.edu.vn<br/>
+                                - Zalo/Facebook: Trường ĐH GTVT Hà Nội
+                            `;
+                        break;
+                    default:
+                        response = `⚠️ Lệnh không hợp lệ. Hãy thử: <code>/quydinh</code> hoặc <code>/lienhe</code>`;
+                }
+
+                addMessage("🤖 Hệ thống", response);
+                chatInput.value = "";
+            }
+        });
+
+        function addMessage(sender, message) {
+            const msgDiv = document.createElement('div');
+            msgDiv.innerHTML = `<strong>${sender}:</strong><div style="margin: 5px 0 10px 0;">${message}</div>`;
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    </script>
+
 </body>
 
 </html>
