@@ -292,7 +292,6 @@
                 //Loading('hiden');
             },
             success: function (response) {
-                debugger
                 self.RenderTableHtml(response.data.Results);
                 $('#lblTotalRecords').text(response.data.RowCount);
                 if (response.data.RowCount != null && response.data.RowCount > 0) {

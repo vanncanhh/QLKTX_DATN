@@ -132,7 +132,7 @@ namespace TECH.Service
                     GioiTinh = data.GioiTinh,
                     DiaChi = data.DiaChi,
                     //TenDangNhap = data.TenDangNhap,
-                    //MatKhau = data.MatKhau,
+                    MatKhau = data.MatKhau,
                     NgaySinh = data.NgaySinh,
                     GioiTinhStr = !string.IsNullOrEmpty(data.GioiTinh) ? (data.GioiTinh == "nam" ? "Nam" : "Nữ") : "",
                     NgaySinhStr = data.NgaySinh.HasValue ? data.NgaySinh.Value.ToString("yyyy-MM-dd") : "",

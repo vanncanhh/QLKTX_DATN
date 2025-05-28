@@ -1,9 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 using TECH.Areas.Admin.Models;
 using TECH.Areas.Admin.Models.Search;
 using TECH.Data.DatabaseEntity;
@@ -26,17 +21,21 @@ namespace TECH.Service
         Dictionary<string, decimal> GetDoanhThu();
         List<HoaDonModelView> GetListHoaDons();
         Dictionary<string, HoaDonModelViewStatistical> GetHoaDonStatistical();
+        void AddChiTietHoaDonSuaChua(int maHoaDon, int maPhong, DateTime tuNgay, DateTime denNgay);
     }
 
     public class HoaDonService : IHoaDonService
     {
         private readonly IHoaDonRepository _hoaDonRepository;
         private IUnitOfWork _unitOfWork;
+        private readonly DataBaseEntityContext _context;
         public HoaDonService(IHoaDonRepository hoaDonRepository,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            DataBaseEntityContext context)
         {
             _hoaDonRepository = hoaDonRepository;
             _unitOfWork = unitOfWork;
+            _context = context;
         }
         public void PayBill(HoaDonModelView view)
         {
@@ -76,29 +75,6 @@ namespace TECH.Service
             }
             return null;
         }
-        //public List<HoaDonModelView> GetPhongByNha(int id)
-        //{
-        //    if (id > 0)
-        //    {
-        //        var data = _hoaDonRepository.FindAll(p => p.Id == id).Select(c => new HoaDonModelView()
-        //        {
-        //            Id = c.Id,
-        //            MaNha = c.MaNha,
-        //            TenPhong = c.TenPhong,
-        //            DonGia = c.DonGia,
-        //            SLNguoiMax = c.SLNguoiMax,
-        //            ChieuDai = c.ChieuDai,
-        //            ChieuRong = c.ChieuRong,
-        //            MoTa = c.MoTa,
-        //            LoaiPhong = c.LoaiPhong,
-        //            TinhTrang = c.TinhTrang,
-        //            TinhTrangStr = Common.GetTinhTrangPhong(c.TinhTrang.Value)
-        //        }).ToList();
-
-        //        return data;
-        //    }
-        //    return null;
-        //}
         public int GetCount()
         {
             int count = 0;
@@ -290,6 +266,35 @@ namespace TECH.Service
                 return HoaDonStatistical;
             }
             return null;
+        }
+        public void AddChiTietHoaDonSuaChua(int maHoaDon, int maPhong, DateTime tuNgay, DateTime denNgay)
+        {
+            var dsSuaChua = _context.SuaChuas
+                .Where(x => x.MaPhong == maPhong && x.NgayTao >= tuNgay && x.NgayTao <= denNgay)
+                .ToList();
+
+            if (!dsSuaChua.Any()) return;
+
+            var tongTien = dsSuaChua.Sum(x => x.TienSua ?? 0);
+
+            var chiTiet = new ChiTietHoaDon
+            {
+                MaHoaDon = maHoaDon,
+                ThanhTien = tongTien,
+                LoaiChiTiet = 3, // sửa chữa
+                GhiChu = "Phí sửa chữa thiết bị tháng " + tuNgay.ToString("MM/yyyy")
+            };
+
+            _context.chiTietHoaDons.Add(chiTiet);
+
+            var hoaDon = _context.hoaDons.FirstOrDefault(h => h.Id == maHoaDon);
+            if (hoaDon != null)
+            {
+                hoaDon.TongTien = (hoaDon.TongTien ?? 0) + tongTien;
+                _context.hoaDons.Update(hoaDon);
+            }
+
+            _unitOfWork.Commit();
         }
     }
 }

@@ -37,9 +37,82 @@
     <tbody id="tblData"></tbody>
 </table>
 
+<!-- Modal sửa chữa -->
+<div class="modal fade" id="modalSuaChua" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Sửa chữa thiết bị</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="repairPhongId" />
+                <input type="hidden" id="repairThietBiId" />
+                <div class="form-group">
+                    <label>Ngày bắt đầu sửa:</label>
+                    <input type="datetime-local" id="repairNgayTao" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Người sửa:</label>
+                    <input type="text" id="repairNguoiSua" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Chi phí sửa chữa:</label>
+                    <input type="number" id="repairChiPhi" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Mô tả lỗi:</label>
+                    <textarea id="repairMoTa" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Ngày hoàn tất sửa:</label>
+                    <input type="datetime-local" id="repairNgayHoanTat" class="form-control" disabled />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="hoanTatSuaChua()">Sửa xong</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <partial name="AddOrUpdate" />
 
 @section Scripts {
     <script src="~/admin/plugins/jquery-validation/jquery.validate.min.js"></script>
     <script src="~/admin/thietbiphong/thietbiphong.js?v=@DateTime.Now.Ticks"></script>
+    <script>
+        function moModalSuaChua(phongId, thietBiId) {
+            $("#repairPhongId").val(phongId);
+            $("#repairThietBiId").val(thietBiId);
+            $("#repairNgayTao").val(new Date().toISOString().slice(0, 16));
+            $("#repairNgayHoanTat").val("");
+            $("#modalSuaChua").modal("show");
+        }
+
+        function hoanTatSuaChua() {
+            const data = {
+                MaPhong: $("#repairPhongId").val(),
+                MaThietBi: $("#repairThietBiId").val(),
+                NgayTao: $("#repairNgayTao").val(),
+                TenNguoiSua: $("#repairNguoiSua").val(),
+                TienSua: $("#repairChiPhi").val(),
+                Comment: $("#repairMoTa").val(),
+                NgayHoanTat: new Date().toISOString()
+            };
+
+            $.post("/Admin/SuaChua/HoanTatSuaChua", data, function (res) {
+                if (res.success) {
+                    alert("Đã cập nhật sửa chữa và gộp vào hóa đơn tháng!");
+                    $("#modalSuaChua").modal("hide");
+                    $("#btnSearch").click();
+                } else {
+                    alert(res.message);
+                }
+            });
+        }
+    </script>
 }

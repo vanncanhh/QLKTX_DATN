@@ -297,6 +297,10 @@ app.UseEndpoints(endpoints =>
        pattern: "/dang-nhap",
        defaults: new { controller = "Users", action = "Login" });
     endpoints.MapControllerRoute(
+       name: "profile",
+       pattern: "/profile",
+       defaults: new { controller = "Users", action = "Profile" });
+    endpoints.MapControllerRoute(
       name: "GioiThieu",
       pattern: "/gioi-thieu",
       defaults: new { controller = "Home", action = "About" });

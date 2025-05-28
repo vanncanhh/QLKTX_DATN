@@ -223,6 +223,7 @@ namespace TECH.Areas.Admin.Controllers
         public JsonResult AppLogin(string userName, string passWord)
         {
             var result = _appNhanVienService.AppUserLogin(userName, passWord);
+
             // thông tin nhân viên
             if (result != null)
             {
@@ -253,17 +254,16 @@ namespace TECH.Areas.Admin.Controllers
                         Ten = khachhang.TenKH,
                         Email = khachhang.Email,
                         SDT = khachhang.SoDienThoai,
-                        Address=khachhang.DiaChi,
-                        RoleUser = 3 // là khách hàng
+                        Address = khachhang.DiaChi,
+                        RoleUser = 3 // phân quyền là khách
                     };
                     _httpContextAccessor.HttpContext.Session.SetString("UserInfor", JsonConvert.SerializeObject(userMap));
-                }
-               
 
-                return Json(new
-                {
-                    success = khachhang
-                });
+                    return Json(new
+                    {
+                        success = khachhang
+                    });
+                }
             }
             return Json(new
             {
@@ -309,6 +309,17 @@ namespace TECH.Areas.Admin.Controllers
             //        success = result
             //    });
             //}
+            if (!isMailExist && !isPhoneExist)
+            {
+                _khachHangService.Add(UserModelView);
+                _khachHangService.Save();
+
+                return Json(new
+                {
+                    success = true
+                });
+            }
+
             return Json(new
             {
                 success = false,
@@ -379,6 +390,40 @@ namespace TECH.Areas.Admin.Controllers
                 return View(model);
             }
             return Redirect("/home");
+        }
+        [HttpPost]
+        public JsonResult ChangePassByCurrent(string current_password, string new_password)
+        {
+            bool status = false;
+
+            if (!string.IsNullOrEmpty(current_password) && !string.IsNullOrEmpty(new_password))
+            {
+                var userString = _httpContextAccessor.HttpContext.Session.GetString("UserInfor");
+
+                if (!string.IsNullOrEmpty(userString))
+                {
+                    var user = JsonConvert.DeserializeObject<UserMapModelView>(userString);
+                    var currentUser = _khachHangService.GetByid(user.Id);
+
+                    if (currentUser != null)
+                    {
+                        if (currentUser.MatKhau == current_password)
+                        {
+                            _khachHangService.ChangePassWord(currentUser.Id, currentUser.MatKhau, new_password, true);
+                            _khachHangService.Save();
+                            status = true;
+
+                            return Json(new { success = true });
+                        }
+                        else
+                        {
+                            return Json(new { success = false, message = "Sai mật khẩu hiện tại." });
+                        }
+                    }
+                }
+            }
+
+            return Json(new { success = false, message = "Dữ liệu không hợp lệ hoặc chưa đăng nhập." });
         }
     }
 }

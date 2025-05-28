@@ -34,8 +34,9 @@
                 html += "<td>" + (item.NgayCap ? new Date(item.NgayCap).toLocaleDateString() : "") + "</td>";
                 html += "<td>" + (item.GhiChu || "") + "</td>";
                 html += "<td class='text-center'>";
-                html += "<button class='btn btn-warning btn-edit' data-id='" + item.MaThietBi + "'>Sửa</button> ";
-                html += "<button class='btn btn-danger btn-delete' data-id='" + item.MaThietBi + "'>Xóa</button>";
+                html += `<button class='btn btn-primary btn-repair' data-phongid='${item.MaPhong}' data-thietbiid='${item.MaThietBi}'>Sửa chữa</button> `;
+                html += `<button class='btn btn-warning btn-edit' data-id='${item.MaThietBi}'>Sửa</button> `;
+                html += `<button class='btn btn-danger btn-delete' data-id='${item.MaThietBi}'>Xóa</button>`;
                 html += "</td></tr>";
             });
         } else {
@@ -105,7 +106,27 @@
         });
     });
 
-    // Xóa thiết bị
+    // Xử lý mở modal sửa chữa
+    $(document).on('click', '.btn-repair', function () {
+        var phongId = $(this).data('phongid');
+        var thietBiId = $(this).data('thietbiid');
+        if (!phongId || !thietBiId) {
+            tedu.notify("Thiếu thông tin thiết bị/phòng", "warning");
+            return;
+        }
+
+        $("#repairPhongId").val(phongId);
+        $("#repairThietBiId").val(thietBiId);
+        $("#repairNgayTao").val(new Date().toISOString().slice(0, 16));
+        $("#repairNguoiSua").val("");
+        $("#repairChiPhi").val("");
+        $("#repairMoTa").val("");
+        $("#repairNgayHoanTat").val("");
+
+        $("#modalSuaChua").modal("show");
+    });
+
+    // Xử lý xóa thiết bị
     $(document).on('click', '.btn-delete', function () {
         var phongId = $('#phongSelect').val();
         var maThietBi = $(this).data('id');
@@ -134,7 +155,7 @@
         }
     });
 
-    // Gửi dữ liệu form
+    // Gửi dữ liệu form thiết bị phòng
     self.Submit = function () {
         var phongId = $('#MaPhong').val();
         var maThietBi = $('#MaThietBi').val();
@@ -189,11 +210,33 @@
         $(".error").removeClass("error");
     });
 
+    // Gửi yêu cầu sửa chữa thiết bị
+    window.hoanTatSuaChua = function () {
+        const data = {
+            MaPhong: $("#repairPhongId").val(),
+            MaThietBi: $("#repairThietBiId").val(),
+            NgayTao: $("#repairNgayTao").val(),
+            TenNguoiSua: $("#repairNguoiSua").val(),
+            TienSua: $("#repairChiPhi").val(),
+            Comment: $("#repairMoTa").val(),
+            NgayHoanTat: new Date().toISOString()
+        };
+
+        $.post("/Admin/SuaChua/HoanTatSuaChua", data, function (res) {
+            if (res.success) {
+                tedu.notify("Sửa chữa thành công và đã thêm vào hóa đơn!", "success");
+                $("#modalSuaChua").modal("hide");
+                $('#btnSearch').click();
+            } else {
+                tedu.notify(res.message || "Lỗi khi xử lý sửa chữa", "error");
+            }
+        });
+    };
+
     // Khởi tạo
     $(document).ready(function () {
         self.Validate();
-
-        $('#btnSearch').click(); // Tự load lần đầu nếu có phòng mặc định (nếu cần)
+        $('#btnSearch').click();
     });
 
 })(jQuery);

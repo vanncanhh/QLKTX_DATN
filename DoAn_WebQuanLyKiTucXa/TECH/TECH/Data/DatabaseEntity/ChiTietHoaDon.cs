@@ -34,5 +34,8 @@ namespace TECH.Data.DatabaseEntity
 
         [Column(TypeName = "decimal(18,0)")]
         public decimal? ThanhTien { get; set; }
+        public int? LoaiChiTiet { get; set; }
+        [Column(TypeName = "nvarchar(500)")]
+        public string? GhiChu { get; set; }
     }
 }

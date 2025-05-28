@@ -397,7 +397,7 @@
                     </span>
                     <div class="user-head">
                         <ul class="ul-user-head">
-                            @if (user != null && user.RoleUser == 1)
+                            @if (user != null && user.RoleUser == 3)
                             {
 
                                 <li class="nav-item dropdown">
@@ -405,7 +405,10 @@
                                         @user.Ten
                                     </a>
                                     <div aria-labelledby="dropdown04" class="dropdown-menu" style="left: -45px;">
-
+                                        <a href="/hop-dong" class="dropdown-item">Hợp đồng</a>
+                                        <a href="/hoa-don-user" class="dropdown-item">Hóa đơn</a>
+                                        <a href="/profile" class="dropdown-item">Profile</a>
+                                        <a href="/doi-mat-khau" class="dropdown-item">Đổi mật khẩu</a>
                                         <a href="/dang-xuat" class="dropdown-item">Đăng xuất</a>
                                     </div>
                                 </li>
@@ -416,6 +419,7 @@
                                     <a href="#" id="dropdown05" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Quản trị viên </a>
                                     <div class="dropdown-menu" aria-labelledby="dropdown05" style="left: -45px;">
                                         <a href="/admin" class="dropdown-item">Trang quản trị</a>
+                                        <a href="/profile" class="dropdown-item">Profile</a>
 
                                         <a href="/dang-xuat" class="dropdown-item">Đăng xuất</a>
                                     </div>
