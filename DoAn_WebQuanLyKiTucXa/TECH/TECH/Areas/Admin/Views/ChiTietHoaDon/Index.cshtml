@@ -256,6 +256,47 @@
                         </div>
                     }
                     </div>
+                    @if (Model.ChiTietHoaDonModelViews != null)
+                    {
+                        var listSuaChua = Model.ChiTietHoaDonModelViews
+                        .Where(x => x.LoaiChiTiet == 3)
+                        .ToList();
+
+                        if (listSuaChua.Count > 0)
+                        {
+                            <div class="box-session-content">
+                                <div class="col-md-12">
+                                    <h3 style="float:left">Danh sách các khoản sửa chữa</h3>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-striped" style="border: 1px solid #ddd;">
+                                        <thead>
+                                            <tr>
+                                                <th>STT</th>
+                                                <th>Ghi chú</th>
+                                                <th>Thành tiền</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                int stt = 1;
+                                                foreach (var item in listSuaChua)
+                                                {
+                                                    <tr>
+                                                        <td>@stt</td>
+                                                        <td>@item.GhiChu</td>
+                                                        <td>@item.ThanhTien?.ToString("#,###")</td>
+                                                    </tr>
+                                                    ;
+                                                    stt++;
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                    }
                     <div class="box-session-content">
                         <div class="col-md-12">
                             <h3 style="float:left">Danh sách các khoản thanh toán</h3>                                        
@@ -287,7 +328,8 @@
                                     @*tiền dịch vụ*@
                                     @if (Model.ChiTietHoaDonModelViews != null && Model.ChiTietHoaDonModelViews.Count > 0)
                                     {
-                                        @foreach(var item in Model.ChiTietHoaDonModelViews){
+                                        @foreach (var item in Model.ChiTietHoaDonModelViews.Where(x => x.LoaiChiTiet != 3))
+                                        {
                                             idanhsach++;
                                             <tr>
                                                 <td>@idanhsach</td>
@@ -328,6 +370,27 @@
                                             </tr>
                                         }
                                     }
+                                    @if (Model.ChiTietHoaDonModelViews != null)
+                                    {
+                                        var listSuaChua = Model.ChiTietHoaDonModelViews
+                                        .Where(x => x.LoaiChiTiet == 3 && x.ThanhTien.HasValue)
+                                        .ToList();
+
+                                        if (listSuaChua.Count > 0)
+                                        {
+                                            foreach (var item in listSuaChua)
+                                            {
+                                                idanhsach++;
+                                                tongtien += item.ThanhTien.Value;
+                                                <tr>
+                                                    <td>@idanhsach</td>
+                                                    <td>Sửa chữa: @item.GhiChu</td>
+                                                    <td style="text-align: right;">@item.ThanhTien.Value.ToString("#,###")</td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+
                                     <tr>
                                         <td colspan="3">
                                             <span style="color: #4a4a4a;font-weight: bold;">Tổng tiền:</span>

@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using TECH.Areas.Admin.Models;
 using TECH.Areas.Admin.Models.Search;
 using TECH.Service;
-using System.Text.RegularExpressions;
-using TECH.General;
-using TECH.Data.DatabaseEntity;
 
 namespace TECH.Areas.Admin.Controllers
 {
@@ -144,16 +141,40 @@ namespace TECH.Areas.Admin.Controllers
                         lstChiTietHoaDonIndexModelViews.LoiPhamModelViews = lstLoiPham;
                     }
                 }
+                if (chiTietHoaDon != null && chiTietHoaDon.Count > 0)
+                {
+                    var suaChuas = chiTietHoaDon
+                        .Where(p => p.LoaiChiTiet == 3 && p.ThanhTien.HasValue)
+                        .ToList();
+
+                    if (suaChuas.Count > 0)
+                    {
+                        var tongSuaChua = suaChuas.Sum(p => p.ThanhTien.Value);
+                        lstChiTietHoaDonIndexModelViews.TongTien += tongSuaChua;
+
+                        if (lstChiTietHoaDonIndexModelViews.ChiTietHoaDonModelViews == null)
+                            lstChiTietHoaDonIndexModelViews.ChiTietHoaDonModelViews = new List<ChiTietHoaDonModelView>();
+
+                        foreach (var sua in suaChuas)
+                        {
+                            var item = new ChiTietHoaDonModelView
+                            {
+                                MaHoaDon = sua.MaHoaDon,
+                                LoaiChiTiet = sua.LoaiChiTiet,
+                                ThanhTien = sua.ThanhTien,
+                                GhiChu = sua.GhiChu,
+                                MaDV = sua.MaDV,
+                                MaLoi = sua.MaLoi,
+                                ChiSoCu = sua.ChiSoCu,
+                                ChiSoMoi = sua.ChiSoMoi,
+                                ChiSoDung = sua.ChiSoDung
+                            };
+                            lstChiTietHoaDonIndexModelViews.ChiTietHoaDonModelViews.Add(item);
+                        }
+                    }
+                }
             }
             return View(lstChiTietHoaDonIndexModelViews);
-
-            //var data = _chiTietHoaDonService.GetChiTietHoaDonByMaHoaDon(mahoadon);
-            // trong trường hợp nếu data == null thì chưa được add
-            // lấy danh sách các dịch vụ của phòng sau đó compare với các dịch ở vụ ở trong bảng chi tiết hóa đơn
-            // sẽ lấy dự liệu từ bảng dịch vụ phòng để làm chuẩn 
-            // 1 nếu trong bảng chi tiết dịch vụ chưa có thì sẽ view all các dịch vụ của phòng lấy 
-            // 2 nếu trong bảng chi tiết dịch vụ có tồn tại data
-
         }
 
         [HttpGet]
@@ -248,24 +269,6 @@ namespace TECH.Areas.Admin.Controllers
         {
             if (maHoaDon > 0 && maPhong > 0)
             {
-                //if (chiTietHoaDonModelView.MaDV.HasValue && chiTietHoaDonModelView.MaDV.Value > 0)
-                //{
-                //    if (chiTietHoaDonModelView.MaHoaDon.HasValue && chiTietHoaDonModelView.MaHoaDon.Value > 0)
-                //    {
-                //        _chiTietHoaDonService.Deleted(chiTietHoaDonModelView.MaHoaDon.Value, chiTietHoaDonModelView.MaDV.Value);
-                //    }
-                //    var dichvu = _dichVuService.GetByid(chiTietHoaDonModelView.MaDV.Value);
-                //    if (dichvu != null && dichvu.DonGia.HasValue && dichvu.DonGia.Value > 0 && chiTietHoaDonModelView.ChiSoDung.HasValue && chiTietHoaDonModelView.ChiSoDung.Value > 0)
-                //    {
-                //        chiTietHoaDonModelView.ThanhTien = dichvu.DonGia.Value * chiTietHoaDonModelView.ChiSoDung.Value;
-                //    }
-                //    _chiTietHoaDonService.Add(chiTietHoaDonModelView);
-                //    _chiTietHoaDonService.Save();
-                //    return Json(new
-                //    {
-                //        success = true
-                //    });
-                //}
             }
             return Json(new
             {

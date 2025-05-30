@@ -400,6 +400,18 @@ namespace TECH.Areas.Admin.Controllers
                         //lstChiTietHoaDonIndexModelViews.LoiPhamModelViews = lstLoiPham;
                     }
                 }
+                if (chiTietHoaDon != null && chiTietHoaDon.Count > 0)
+                {
+                    var suaChuas = chiTietHoaDon
+                        .Where(x => x.LoaiChiTiet == 3 && x.ThanhTien.HasValue)
+                        .ToList();
+
+                    if (suaChuas.Count > 0)
+                    {
+                        var tongSuaChua = suaChuas.Sum(x => x.ThanhTien.Value);
+                        tongtien += tongSuaChua;
+                    }
+                }
             }
             return tongtien;
         }

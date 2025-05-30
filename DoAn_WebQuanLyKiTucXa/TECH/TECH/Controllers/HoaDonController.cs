@@ -3,10 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using TECH.Areas.Admin.Models;
 using TECH.Areas.Admin.Models.Search;
 using TECH.Service;
-using System.Text.RegularExpressions;
-using TECH.General;
-using TECH.Data.DatabaseEntity;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using TECH.Utilities;
 using Newtonsoft.Json;
 
@@ -178,10 +174,6 @@ namespace TECH.Controllers
         public JsonResult Update(HoaDonModelView HoaDonModelView)
         {
             var result = _hoaDonService.Update(HoaDonModelView);
-            //if (HoaDonModelView.TrangThai.HasValue && HoaDonModelView.TrangThai.Value == 3)
-            //{
-            //    _phongService.UpdateTrangThai(HoaDonModelView.MaPhong.Value, 1); // Trống
-            //}
             _hoaDonService.Save();
             return Json(new
             {
@@ -193,11 +185,6 @@ namespace TECH.Controllers
         {
             if (id > 0)
             {
-                //var data = _hoaDonService.GetByid(id);
-                //if (data != null && data.MaPhong.HasValue && data.MaPhong.Value > 0)
-                //{
-                //    _phongService.UpdateTrangThai(data.MaPhong.Value, 1); // Trống
-                //}
                 var result = _hoaDonService.Deleted(id);
                 _hoaDonService.Save();
                 return Json(new
@@ -331,13 +318,7 @@ namespace TECH.Controllers
                                         {
                                             totalDichVu = dichvuParsent.DonGia.Value;
                                         }
-                                        //else if (chiTietHoaDonObject.ChiSoDung.HasValue &&
-                                        //    chiTietHoaDonObject.ChiSoDung.Value > 0)
-                                        //{
-                                        //    totalDichVu += dichvuParsent.DonGia.Value * chiTietHoaDonObject.ChiSoDung.Value;
-                                        //}
                                     }
-                                    //totalDichVu += dichvuParsent.DonGia.HasValue && dichvuParsent.DonGia.Value > 0 ? dichvuParsent.DonGia.Value : 0;
                                 }
                                 lstChiTietDichVu.Add(chiTietDichVuOject);
                             }
@@ -372,23 +353,14 @@ namespace TECH.Controllers
                                     {
                                         totalDichVu = dichvuParsent.DonGia.Value;
                                     }
-                                    //else if (chiTietDichVuOject.ChiSoDung.HasValue &&
-                                    //    chiTietDichVuOject.ChiSoDung.Value > 0)
-                                    //{
-                                    //    totalDichVu += dichvuParsent.DonGia.Value * chiTietDichVuOject.ChiSoDung.Value;
-                                    //}
                                 }
-                                //totalDichVu += dichvuParsent.DonGia.HasValue && dichvuParsent.DonGia.Value > 0 ? dichvuParsent.DonGia.Value : 0;
                             }
                             lstChiTietDichVu.Add(chiTietDichVuOject);
                         }
                         tongtien += totalDichVu;
                     }
-                    //lstChiTietHoaDonIndexModelViews.TongTien += totalDichVu;
-                    //lstChiTietHoaDonIndexModelViews.ChiTietHoaDonModelViews = lstChiTietDichVu;
 
                 }
-                // lấy thông tin mã lỗi
                 if (chiTietHoaDon != null && chiTietHoaDon.Count > 0)
                 {
                     var lois = chiTietHoaDon.Where(p => p.MaLoi.HasValue && p.MaLoi.Value > 0).ToList();
@@ -404,9 +376,18 @@ namespace TECH.Controllers
                             lstLoiPham.Add(loiPham);
                             tongtien += tienPhat;
                         }
-                       
-                        //lstChiTietHoaDonIndexModelViews.TongTien += tienPhat;
-                        //lstChiTietHoaDonIndexModelViews.LoiPhamModelViews = lstLoiPham;
+                    }
+                }
+                if (chiTietHoaDon != null && chiTietHoaDon.Count > 0)
+                {
+                    var suaChuas = chiTietHoaDon
+                        .Where(x => x.LoaiChiTiet == 3 && x.ThanhTien.HasValue)
+                        .ToList();
+
+                    if (suaChuas.Count > 0)
+                    {
+                        var tongSuaChua = suaChuas.Sum(x => x.ThanhTien.Value);
+                        tongtien += tongSuaChua;
                     }
                 }
             }
@@ -456,13 +437,6 @@ namespace TECH.Controllers
                     }                  
                 }
                 data.Results = lstData.Results;
-                //if (hoaDonViewModelSearch != null && !string.IsNullOrEmpty(hoaDonViewModelSearch.name))
-                //{
-                //    data.Results = data.Results.Where(p => p.k.Contains(hoaDonViewModelSearch.name) ||
-                //    p.TenPhong.Contains(phongViewModelSearch.name) ||
-                //    p.TenKhachHang.Contains(phongViewModelSearch.name) ||
-                //    p.TenNhanVien.Contains(phongViewModelSearch.name)).ToList();
-                //}
                 if (hoaDonViewModelSearch.status > 0)
                 {
                     data.Results = data.Results.Where(p => p.TrangThai == hoaDonViewModelSearch.status).ToList();

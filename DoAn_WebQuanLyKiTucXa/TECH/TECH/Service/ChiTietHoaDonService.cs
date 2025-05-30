@@ -48,6 +48,9 @@ namespace TECH.Service
                 ChiSoCu = p.ChiSoCu,
                 ChiSoMoi = p.ChiSoMoi,
                 ChiSoDung = p.ChiSoDung,
+                ThanhTien = p.ThanhTien,
+                LoaiChiTiet = p.LoaiChiTiet,
+                GhiChu = p.GhiChu,
                 ThanhTienStr = p.ThanhTien.HasValue && p.ThanhTien.Value > 0 ? p.ThanhTien.Value.ToString("#,###"):""
             }).ToList();
             

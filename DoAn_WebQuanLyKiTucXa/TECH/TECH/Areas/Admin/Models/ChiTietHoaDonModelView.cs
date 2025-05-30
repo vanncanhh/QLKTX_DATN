@@ -19,6 +19,9 @@
         public int? ChiSoDung { get; set; }
         public decimal? ThanhTien { get; set; }
         public string? ThanhTienStr { get; set; }
+        public int? LoaiChiTiet { get; set; }
+        public string? TenDichVu => DichVu?.TenDV;
+        public string? GhiChu { get; set; }
     }
 
     public class ChiTietHoaDonIndexModelViews

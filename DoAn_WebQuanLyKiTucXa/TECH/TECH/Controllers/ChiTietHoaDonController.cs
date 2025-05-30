@@ -156,15 +156,26 @@ namespace TECH.Controllers
                         lstChiTietHoaDonIndexModelViews.LoiPhamModelViews = lstLoiPham;
                     }
                 }
+                if (chiTietHoaDon != null && chiTietHoaDon.Count > 0)
+                {
+                    var suaChuas = chiTietHoaDon
+                        .Where(p => p.LoaiChiTiet.HasValue && p.LoaiChiTiet == 3 && p.ThanhTien.HasValue)
+                        .ToList();
+
+                    if (suaChuas.Count > 0)
+                    {
+                        var tongSuaChua = suaChuas.Sum(p => p.ThanhTien.Value);
+                        lstChiTietHoaDonIndexModelViews.TongTien += tongSuaChua;
+
+                        // Gộp luôn các chi tiết sửa chữa vào list nếu muốn hiển thị trong view
+                        if (lstChiTietHoaDonIndexModelViews.ChiTietHoaDonModelViews == null)
+                            lstChiTietHoaDonIndexModelViews.ChiTietHoaDonModelViews = new List<ChiTietHoaDonModelView>();
+
+                        lstChiTietHoaDonIndexModelViews.ChiTietHoaDonModelViews.AddRange(suaChuas);
+                    }
+                }
             }
             return View(lstChiTietHoaDonIndexModelViews);
-
-            //var data = _chiTietHoaDonService.GetChiTietHoaDonByMaHoaDon(mahoadon);
-            // trong trường hợp nếu data == null thì chưa được add
-            // lấy danh sách các dịch vụ của phòng sau đó compare với các dịch ở vụ ở trong bảng chi tiết hóa đơn
-            // sẽ lấy dự liệu từ bảng dịch vụ phòng để làm chuẩn 
-            // 1 nếu trong bảng chi tiết dịch vụ chưa có thì sẽ view all các dịch vụ của phòng lấy 
-            // 2 nếu trong bảng chi tiết dịch vụ có tồn tại data
 
         }
 
@@ -260,24 +271,6 @@ namespace TECH.Controllers
         {
             if (maHoaDon > 0 && maPhong > 0)
             {
-                //if (chiTietHoaDonModelView.MaDV.HasValue && chiTietHoaDonModelView.MaDV.Value > 0)
-                //{
-                //    if (chiTietHoaDonModelView.MaHoaDon.HasValue && chiTietHoaDonModelView.MaHoaDon.Value > 0)
-                //    {
-                //        _chiTietHoaDonService.Deleted(chiTietHoaDonModelView.MaHoaDon.Value, chiTietHoaDonModelView.MaDV.Value);
-                //    }
-                //    var dichvu = _dichVuService.GetByid(chiTietHoaDonModelView.MaDV.Value);
-                //    if (dichvu != null && dichvu.DonGia.HasValue && dichvu.DonGia.Value > 0 && chiTietHoaDonModelView.ChiSoDung.HasValue && chiTietHoaDonModelView.ChiSoDung.Value > 0)
-                //    {
-                //        chiTietHoaDonModelView.ThanhTien = dichvu.DonGia.Value * chiTietHoaDonModelView.ChiSoDung.Value;
-                //    }
-                //    _chiTietHoaDonService.Add(chiTietHoaDonModelView);
-                //    _chiTietHoaDonService.Save();
-                //    return Json(new
-                //    {
-                //        success = true
-                //    });
-                //}
             }
             return Json(new
             {
@@ -370,10 +363,6 @@ namespace TECH.Controllers
         public JsonResult Update(HoaDonModelView HoaDonModelView)
         {
             var result = _hoaDonService.Update(HoaDonModelView);
-            //if (HoaDonModelView.TrangThai.HasValue && HoaDonModelView.TrangThai.Value == 3)
-            //{
-            //    _phongService.UpdateTrangThai(HoaDonModelView.MaPhong.Value, 1); // Trống
-            //}
             _hoaDonService.Save();
             return Json(new
             {
@@ -385,11 +374,6 @@ namespace TECH.Controllers
         {
             if (id > 0)
             {
-                //var data = _hoaDonService.GetByid(id);
-                //if (data != null && data.MaPhong.HasValue && data.MaPhong.Value > 0)
-                //{
-                //    _phongService.UpdateTrangThai(data.MaPhong.Value, 1); // Trống
-                //}
                 var result = _hoaDonService.Deleted(id);
                 _hoaDonService.Save();
                 return Json(new
