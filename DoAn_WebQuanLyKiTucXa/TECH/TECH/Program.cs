@@ -2,6 +2,7 @@
 using TECH.Data.DatabaseEntity;
 using TECH.Reponsitory;
 using TECH.Service;
+using VNPAY.NET;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
+
 
 builder.Services.AddDbContext<DataBaseEntityContext>(options =>
 {
@@ -61,6 +63,7 @@ builder.Services.AddScoped<IThanhPhoService, ThanhPhoService>();
 builder.Services.AddScoped<IQuanHuyenService, QuanHuyenService>();
 builder.Services.AddScoped<IPhuongXaService, PhuongXaService>();
 builder.Services.AddScoped<IThietBiService, ThietBiService>();
+builder.Services.AddSingleton<IVnpay, Vnpay>();
 
 //builder.Services.AddMemoryCache();
 

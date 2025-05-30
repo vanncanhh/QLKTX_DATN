@@ -524,13 +524,6 @@
                 };
 
                 self.PaymentBill(hoaDonBill);
-                //self.GetValue();
-                //if (self.IsUpdate) {
-                //    self.UpdateUser(self.HoaDon);
-                //}
-                //else {
-                //    self.AddUser(self.HoaDon);
-                //}
             }
         });
     }
@@ -551,12 +544,6 @@
             },
             success: function (response) {
                 window.location.reload();
-                //if (response.success) {
-                //    tedu.notify('Cập nhật dữ liệu thành công', 'success');
-                //    /*self.GetDataPaging(true);*/
-                //    $('#userModal').modal('hide');
-                //    window.location.reload();
-                //}
 
             }
         })
@@ -573,20 +560,6 @@
         self.GetAllKhachHang();
         self.GetAllNhanVien();
 
-        //$(".formatdate").datepicker({
-        //    dateFormat: 'mm/yy'
-        //});
-        //$('#MaPhong').select2({
-        //    placeholder: 'Chọn phòng'
-        //});
-        /*$("#MaPhong").val(1);*/
-        //$("#MaPhong").val(3);
-        /* $("#MaPhong").select2('val', 3);*/
-
-        //$('#MaPhong').val(3);
-        //$('#MaPhong').select2().trigger('change');
-        //$("#MaPhong").select2().val([0,3,4,5]).trigger("change");
-
 
         $('.formatdate').datepicker({
             changeMonth: true,
@@ -594,9 +567,6 @@
             /*showDate:false,*/
             showButtonPanel: true,
             dateFormat: 'dd/mm/yy',
-            //onClose: function (dateText, inst) {
-            //    $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
-            //}
         });
 
         $(".modal").on("hidden.bs.modal", function () {

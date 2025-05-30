@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Hosting;
 using TECH.Areas.Admin.Models;
 using TECH.Areas.Admin.Models.Search;
 using TECH.Service;
@@ -445,6 +444,5 @@ namespace TECH.Controllers
             
             return Json(new { data = data });
         }
-
     }
 }
