@@ -10,7 +10,7 @@ namespace TECH.Controllers
         {
             var vnpay = new VnPayLibrary();
 
-            string vnp_Returnurl = "https://localhost:5001/Payment/PaymentReturn"; // hoặc thay bằng domain thật
+            string vnp_Returnurl = "https://localhost:5001/Payment/PaymentReturn";
             string vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
             string vnp_TmnCode = "SA4T20OD";
             string vnp_HashSecret = "RLDACN88A1LORYXOB6VG97KDO4UX8RMI";
@@ -22,14 +22,13 @@ namespace TECH.Controllers
             string createDate = vnTime.ToString("yyyyMMddHHmmss");
             string expireDate = vnTime.AddMinutes(15).ToString("yyyyMMddHHmmss");
 
-
             vnpay.AddRequestData("vnp_Version", "2.1.0");
             vnpay.AddRequestData("vnp_Command", "pay");
             vnpay.AddRequestData("vnp_TmnCode", vnp_TmnCode);
             vnpay.AddRequestData("vnp_Amount", ((long)tienDong * 100).ToString());
-            vnpay.AddRequestData("vnp_BankCode", "VNPAYQR");
+            vnpay.AddRequestData("vnp_BankCode", "VNBANK");
             vnpay.AddRequestData("vnp_CreateDate", createDate);
-            vnpay.AddRequestData("vnp_ExpireDate", expireDate); // THÊM DÒNG NÀY
+            vnpay.AddRequestData("vnp_ExpireDate", expireDate);
             vnpay.AddRequestData("vnp_CurrCode", "VND");
 
             string ip = HttpContext.Connection.RemoteIpAddress?.ToString();
@@ -43,20 +42,24 @@ namespace TECH.Controllers
             vnpay.AddRequestData("vnp_TxnRef", orderId);
 
             string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
-
-            return Json(paymentUrl);
+            return Content(paymentUrl);
         }
 
         [HttpGet]
         public IActionResult PaymentReturn()
         {
             var vnpay = new VnPayLibrary();
+
             foreach (var (key, value) in Request.Query)
             {
                 vnpay.AddResponseData(key, value);
             }
 
-            bool isValid = vnpay.ValidateSignature("RLDACN88A1LORYXOB6VG97KDO4UX8RMI");
+            // Lấy vnp_SecureHash từ query string
+            string inputHash = Request.Query["vnp_SecureHash"];
+            string vnp_HashSecret = "RLDACN88A1LORYXOB6VG97KDO4UX8RMI";
+
+            bool isValid = vnpay.ValidateSignature(inputHash, vnp_HashSecret);
 
             if (isValid && vnpay.GetResponseData("vnp_ResponseCode") == "00")
             {

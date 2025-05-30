@@ -514,17 +514,40 @@
                 var tiendong = $("#TienDong").val();
                 var ghichu = $("#GhiChu").val();
                 var nguoidong = $("#NguoiDong").val();
-                var hoaDonBill = {
-                    Id: parseInt($("#mahoadonhidden").val()),
-                    NguoiDong: nguoidong,
-                    GhiChu: ghichu,
-                    TienDong: tiendong,
-                    TrangThai: 1,
-                    TongTien: parseInt($("#tongtienhidden").val())
-                };
+                var phuongthuc = $("#PhuongThucThanhToan").val();
 
-                self.PaymentBill(hoaDonBill);
+                if (phuongthuc === 'vnpay') {
+                    // Gọi controller tạo URL VNPay rồi chuyển hướng
+                    $.ajax({
+                        url: '/Payment/PaymentVNPay',
+                        type: 'POST',
+                        data: {
+                            nguoiDong: nguoidong,
+                            tienDong: tiendong,
+                            ghiChu: ghichu
+                        },
+                        success: function (url) {
+                            window.location.href = url;
+                        },
+                        error: function () {
+                            alert('Lỗi khi kết nối VNPay');
+                        }
+                    });
+                } else {
+                    // Xử lý thanh toán tiền mặt
+                    var hoaDonBill = {
+                        Id: parseInt($("#mahoadonhidden").val()),
+                        NguoiDong: nguoidong,
+                        GhiChu: ghichu,
+                        TienDong: tiendong,
+                        TrangThai: 1,
+                        TongTien: parseInt($("#tongtienhidden").val())
+                    };
+
+                    self.PaymentBill(hoaDonBill);
+                }
             }
+
         });
     }
 

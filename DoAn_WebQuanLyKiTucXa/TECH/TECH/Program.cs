@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TECH;
 using TECH.Data.DatabaseEntity;
 using TECH.Reponsitory;
 using TECH.Service;
@@ -16,6 +17,7 @@ builder.Services.AddControllers();
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<Utils>();
 builder.Services.AddSession();
 
 

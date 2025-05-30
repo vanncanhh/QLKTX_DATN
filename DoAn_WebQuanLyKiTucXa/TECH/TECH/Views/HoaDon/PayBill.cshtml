@@ -67,33 +67,3 @@
     </div>
 </div>
 
-<script>
-    $('#form-submit-bill').on('submit', function (e) {
-        e.preventDefault();
-
-        const method = $('#PhuongThucThanhToan').val();
-        const nguoiDong = $('#NguoiDong').val();
-        const tienDong = $('#TienDong').val();
-        const ghiChu = $('#GhiChu').val();
-
-        if (method === 'vnpay') {
-            // Gửi form qua URL tới controller tạo link VNPay
-            $.ajax({
-                url: '/Payment/PaymentVNPay',
-                method: 'POST',
-                data: {
-                    nguoiDong: nguoiDong,
-                    tienDong: tienDong,
-                    ghiChu: ghiChu
-                },
-                success: function (redirectUrl) {
-                    window.location.href = redirectUrl;
-                }
-            });
-        } else {
-            // Xử lý thanh toán tiền mặt tại chỗ
-            alert('Thanh toán tiền mặt thành công!');
-        }
-    });
-</script>
-
