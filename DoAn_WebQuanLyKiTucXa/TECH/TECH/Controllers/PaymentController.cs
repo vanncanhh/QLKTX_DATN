@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TECH;
 
 namespace TECH.Controllers
 {
@@ -25,7 +24,7 @@ namespace TECH.Controllers
             vnpay.AddRequestData("vnp_Version", "2.1.0");
             vnpay.AddRequestData("vnp_Command", "pay");
             vnpay.AddRequestData("vnp_TmnCode", vnp_TmnCode);
-            vnpay.AddRequestData("vnp_Amount", ((long)tienDong * 100).ToString());
+            vnpay.AddRequestData("vnp_Amount", ((long)tienDong).ToString());
             vnpay.AddRequestData("vnp_BankCode", "VNBANK");
             vnpay.AddRequestData("vnp_CreateDate", createDate);
             vnpay.AddRequestData("vnp_ExpireDate", expireDate);
@@ -69,8 +68,7 @@ namespace TECH.Controllers
             {
                 ViewBag.Message = "❌ Thanh toán thất bại hoặc bị hủy.";
             }
-
-            return View();
+            return RedirectToAction("Index", "Home");
         }
     }
 }

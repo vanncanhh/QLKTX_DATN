@@ -5,6 +5,7 @@ using TECH.Areas.Admin.Models.Search;
 using TECH.Service;
 using System.Text.RegularExpressions;
 using TECH.General;
+using TECH.Data.DatabaseEntity;
 
 namespace TECH.Areas.Admin.Controllers
 {
@@ -17,6 +18,7 @@ namespace TECH.Areas.Admin.Controllers
         private readonly IThanhVienPhongService _thanhVienPhongService;
         private readonly IKhachHangService _khachHangService;
         private readonly IHopDongService _hopDongService;
+        private readonly ILoaiPhongChiTietService _loaiPhongChiTietService;
         private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _hostingEnvironment;
         public PhongController(IPhongService phongService,
             Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment,
@@ -25,7 +27,8 @@ namespace TECH.Areas.Admin.Controllers
             IDichVuService dichVuService,
             IThanhVienPhongService thanhVienPhongService,
             IHopDongService hopDongService,
-        IKhachHangService khachHangService)
+        IKhachHangService khachHangService,
+        ILoaiPhongChiTietService loaiPhongChiTietService)
         {
             _phongService = phongService;
             _nhaService = nhaService;
@@ -35,17 +38,42 @@ namespace TECH.Areas.Admin.Controllers
             _khachHangService = khachHangService;
             _hopDongService = hopDongService;
             _hostingEnvironment = hostingEnvironment;
+            _loaiPhongChiTietService = loaiPhongChiTietService;
         }
         public IActionResult Index()
         {
             var data = _nhaService.GetAll();
             if (data != null && data.Count > 0)
             {
-                int phongId = data[0].Id;
+                int nhaId = data[0].Id;
                 var model = new List<PhongModelView>();
-                if (phongId > 0)
+                if (nhaId > 0)
                 {
-                    model = _phongService.GetPhongByNha(phongId);                    
+                    model = _phongService.GetPhongByNha(nhaId);
+                    var hopDongs = _hopDongService.GetPhongByHopDong();
+
+                    foreach (var phong in model)
+                    {
+                        // Đếm số người đang thuê theo phòng
+                        phong.SoNguoiDangThue = hopDongs.Count(hd => hd.MaPhong == phong.Id && (hd.IsDeteled != true));
+
+                        // Nếu SLNguoiMax chưa có, thử lấy từ LoaiPhongChiTiet
+                        if (phong.MaLoaiPhongChiTiet.HasValue)
+                        {
+                            var loaiPhong = _loaiPhongChiTietService.GetById(phong.MaLoaiPhongChiTiet.Value);
+                            phong.LoaiPhongChiTiet = loaiPhong;
+
+                            // Gán sức chứa từ loại phòng nếu chưa có
+                            if (loaiPhong != null)
+                            {
+                                phong.SLNguoiMax = loaiPhong.SoLuongNguoi;
+                            }
+
+                        }
+
+                        phong.SlotConLai = (phong.SLNguoiMax ?? 0) - phong.SoNguoiDangThue;
+                        phong.PhongDaDay = phong.SlotConLai <= 0;
+                    }
                     data[0].Phongs = model;
                 }
             }
@@ -97,20 +125,6 @@ namespace TECH.Areas.Admin.Controllers
                 Data = ""
             });
         }
-        
-        //[HttpGet]
-        //public JsonResult BaoCao(int status)
-        //{
-        //    var model = new PhongModelView();
-        //    if (id > 0)
-        //    {
-        //        model = _phongService.GetByid(id);
-        //    }
-        //    return Json(new
-        //    {
-        //        Data = model
-        //    });
-        //}
 
         [HttpGet]
         public JsonResult GetById(int id)
@@ -431,6 +445,37 @@ namespace TECH.Areas.Admin.Controllers
             return Json(new
             {
                 success = true
+            });
+        }
+        [HttpGet]
+        public IActionResult GetKhachThueByPhong(int phongId)
+        {
+            var hopDongs = _hopDongService.GetPhongByHopDong()
+                .Where(x => x.MaPhong == phongId)
+                .ToList();
+
+            var listKhach = new List<object>();
+
+            foreach (var hd in hopDongs)
+            {
+                var khach = _khachHangService.GetByid(hd.MaKH ?? 0);
+                if (khach != null)
+                {
+                    listKhach.Add(new
+                    {
+                        Ten = khach.TenKH,
+                        SoDienThoai = khach.SoDienThoai,
+                        Email = khach.Email,
+                        NgayBatDau = hd.NgayBatDau?.ToString("dd/MM/yyyy"),
+                        NgayKetThuc = hd.NgayKetThuc?.ToString("dd/MM/yyyy")
+                    });
+                }
+            }
+
+            return Json(new
+            {
+                success = listKhach.Any(),
+                data = listKhach
             });
         }
 

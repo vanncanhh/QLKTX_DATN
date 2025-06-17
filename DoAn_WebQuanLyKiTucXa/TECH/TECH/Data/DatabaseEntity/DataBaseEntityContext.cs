@@ -25,6 +25,8 @@ namespace TECH.Data.DatabaseEntity
         public DbSet<ThietBi> ThietBis { get; set; }
         public DbSet<ThietBiPhong> ThietBiPhongs { get; set; }
         public DbSet<SuaChua> SuaChuas { get; set; }
+        public DbSet<DotDangKyKTX> DotDangKyKTXes { get; set; }
+        public DbSet<LoaiPhongChiTiet> LoaiPhongChiTiets { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);            

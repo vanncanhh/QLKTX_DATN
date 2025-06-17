@@ -27,6 +27,17 @@ namespace TECH.Areas.Admin.Models
         public int? TinhTrang { get; set; }
         public string? TinhTrangStr { get; set; }
         public string? HinhAnh { get; set; }
+        public bool DotDangKyDangMo { get; set; }
+        public string? ThongBaoDangKy { get; set; }
+
+        public int? MaLoaiPhongChiTiet { get; set; }
+        public LoaiPhongChiTiet? LoaiPhongChiTiet { get; set; }
+        public int SoNguoiDangThue { get; set; }
+        public int SlotConLai { get; set; }
+        public bool PhongDaDay { get; set; }
+
+        public bool DaDangKyPhong { get; set; }
+
 
     }
     public class HomeModelViewCustomer

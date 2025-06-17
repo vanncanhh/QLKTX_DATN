@@ -1,13 +1,6 @@
-﻿
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using TECH.Areas.Admin.Models;
+﻿using TECH.Areas.Admin.Models;
 using TECH.Areas.Admin.Models.Search;
 using TECH.Data.DatabaseEntity;
-using TECH.General;
 using TECH.Reponsitory;
 using TECH.Utilities;
 
@@ -17,9 +10,6 @@ namespace TECH.Service
     {
         PagedResult<HopDongModelView> GetAllPaging(HopDongViewModelSearch HopDongModelViewSearch);
         HopDongModelView GetByid(int id);
-        //HopDongModelView GetObjectHopDongByid(int id);
-        //List<HopDongModelView> GetPhongByNha(int id);
-        //void AddPhongFast(HopDongModelView view);
         void Add(HopDongModelView view);
         List<HopDongModelView> GetHopDongByPhong(List<int> phongs);
         List<HopDongModelView> GetPhongByHopDong(); 
@@ -51,30 +41,6 @@ namespace TECH.Service
             _khachHangRepository = khachHangRepository;
             _unitOfWork = unitOfWork;
         }   
-        //public HopDongModelView GetObjectHopDongByid(int id)
-        //{
-        //    var data = _hopDongRepository.FindAll(p => p.TrangThai == 1 && p.Id == id).Select(p => new HopDongModelView()
-        //    {
-        //        Id = p.Id,
-        //        MaPhong = p.MaPhong,
-        //        MaNV = p.MaNV,
-        //        MaKH = p.MaKH,
-        //        MaNha = p.MaNha,
-        //        NgayBatDau = p.NgayBatDau,
-        //        NgayKetThuc = p.NgayKetThuc,
-        //        TienCoc = p.TienCoc,
-        //        TrangThai = p.TrangThai,
-        //    }).FirstOrDefault();
-        //    if (data != null)
-        //    {
-        //        var phong = _phongRepository.h
-        //    }
-        //}
-
-        /// <summary>
-        /// lấy tất cả phòng có hợp đồng và đang được thuê
-        /// </summary>
-        /// <returns></returns>
         public List<HopDongModelView> GetPhongByHopDong()
         {
             var data = _hopDongRepository.FindAll(p => p.TrangThai == 1 &&p.IsDeteled !=true).Select(p => new HopDongModelView()
@@ -162,29 +128,6 @@ namespace TECH.Service
             }
             return null;
         }
-        //public List<HopDongModelView> GetPhongByNha(int id)
-        //{
-        //    if (id > 0)
-        //    {
-        //        var data = _hopDongRepository.FindAll(p => p.Id == id).Select(c => new HopDongModelView()
-        //        {
-        //            Id = c.Id,
-        //            MaNha = c.MaNha,
-        //            TenPhong = c.TenPhong,
-        //            DonGia = c.DonGia,
-        //            SLNguoiMax = c.SLNguoiMax,
-        //            ChieuDai = c.ChieuDai,
-        //            ChieuRong = c.ChieuRong,
-        //            MoTa = c.MoTa,
-        //            LoaiPhong = c.LoaiPhong,
-        //            TinhTrang = c.TinhTrang,
-        //            TinhTrangStr = Common.GetTinhTrangPhong(c.TinhTrang.Value)
-        //        }).ToList();
-
-        //        return data;
-        //    }
-        //    return null;
-        //}
         public int GetCount()
         {
             int count = 0;
@@ -216,18 +159,6 @@ namespace TECH.Service
             {
             }
         }
-        //public void AddPhongFast(HopDongModelView view)
-        //{
-        //    if (view != null && view.PhongTu > 0 && view.DenPhong > 0 && view.PhongTu < view.DenPhong)
-        //    {
-        //        for (int i = view.PhongTu.Value; i <= view.DenPhong.Value; i++)
-        //        {
-        //            view.TenPhong = i.ToString();
-        //            Add(view);
-        //        }
-        //        //Save();
-        //    }
-        //}
         public void Save()
         {
             _unitOfWork.Commit();
@@ -299,11 +230,6 @@ namespace TECH.Service
                 {
                     query = query.Where(c => c.MaKH == HopDongModelViewSearch.maKH.Value);
                 }
-                //if (!string.IsNullOrEmpty(HopDongModelViewSearch.name))
-                //{
-                //    query = query.Where(c => c.TenPhong.ToLower().Trim().Contains(HopDongModelViewSearch.name.ToLower().Trim()));
-                //}
-
                 int totalRow = query.Count();
                 query = query.Skip((HopDongModelViewSearch.PageIndex - 1) * HopDongModelViewSearch.PageSize).Take(HopDongModelViewSearch.PageSize);
                 var data = query.OrderByDescending(p => !p.IsDeteled).Select(c => new HopDongModelView()

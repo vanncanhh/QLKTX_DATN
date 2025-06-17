@@ -1,30 +1,36 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Diagnostics;
 using TECH.Areas.Admin.Models;
 using TECH.Areas.Admin.Models.Search;
 using TECH.General;
-using TECH.Models;
 using TECH.Service;
-using TECH.Utilities;
-
 namespace TECH.Controllers
 {
     public class PhongController : Controller
     {
         private readonly IPhongService _phongService;
         private readonly INhaService _nhaService;
-        //private readonly ICategoryService _categoryService;
-        //private readonly ISizesService _sizesService;
+        private readonly IDotDangKyKTXService _dotDangKyService;
+        private readonly IHopDongService _hopDongService;
+        private readonly ILoaiPhongChiTietService _loaiPhongChiTietService;
+        private readonly IKhachHangService _khachHangService;
         public IHttpContextAccessor _httpContextAccessor;
         public PhongController(IPhongService phongService,
             IHttpContextAccessor httpContextAccessor,
-            INhaService nhaService
+            INhaService nhaService,
+            IDotDangKyKTXService dotDangKyService,
+            IHopDongService hopDongService,
+            IKhachHangService khachHangService,
+            ILoaiPhongChiTietService loaiPhongChiTietService
             )
         {
             _phongService = phongService;
             _nhaService = nhaService;
             _httpContextAccessor = httpContextAccessor;
+            _dotDangKyService = dotDangKyService;
+            _loaiPhongChiTietService = loaiPhongChiTietService;
+            _hopDongService = hopDongService;
+            _khachHangService = khachHangService;
         }
 
         public IActionResult PhongCategory(int categoryId)
@@ -76,6 +82,42 @@ namespace TECH.Controllers
                 model = _phongService.GetByid(phongId);
                 if (model != null)
                 {
+                    var userString = _httpContextAccessor.HttpContext.Session.GetString("UserInfor");
+                    if (!string.IsNullOrEmpty(userString))
+                    {
+                        var userMap = JsonConvert.DeserializeObject<UserMapModelView>(userString);
+                        var danhSachHopDong = _hopDongService.GetPhongByHopDong()
+                    .Where(x => x.MaPhong == phongId && x.MaKH == userMap.Id && (x.IsDeteled != true))
+                    .ToList();
+                        model.DaDangKyPhong = danhSachHopDong.Any();
+                    }
+
+                    model.SoNguoiDangThue = _hopDongService
+                .GetPhongByHopDong()
+                .Count(x => x.MaPhong == phongId && x.TrangThai == 1 && (x.IsDeteled != true));
+
+                    // Gán thông tin loại phòng chi tiết
+                    if (model.MaLoaiPhongChiTiet.HasValue)
+                    {
+                        var loaiPhong = _loaiPhongChiTietService.GetById(model.MaLoaiPhongChiTiet.Value);
+                        model.LoaiPhongChiTiet = loaiPhong;
+
+                        // Gán sức chứa từ loại phòng nếu chưa có
+                        if (loaiPhong != null)
+                        {
+                            model.SLNguoiMax = loaiPhong.SoLuongNguoi;
+                        }
+                    }
+
+                    // Tính số slot còn lại và trạng thái đầy phòng
+                    model.SlotConLai = (model.SLNguoiMax ?? 0) - model.SoNguoiDangThue;
+                    model.PhongDaDay = model.SlotConLai <= 0;
+
+                    var dotDangKy = _dotDangKyService.GetDotDangKyDangMo();
+                    model.DotDangKyDangMo = dotDangKy != null;
+                    model.ThongBaoDangKy = dotDangKy != null
+                        ? $"Đang mở đăng ký từ {dotDangKy.ThoiGianBatDau:dd/MM/yyyy} đến {dotDangKy.ThoiGianKetThuc:dd/MM/yyyy}"
+                        : "Hiện tại chưa có đợt đăng ký nào.";
                     if (model.MaNha.HasValue && model.MaNha.Value > 0)
                     {
                         var nha = _nhaService.GetByid(model.MaNha.Value);

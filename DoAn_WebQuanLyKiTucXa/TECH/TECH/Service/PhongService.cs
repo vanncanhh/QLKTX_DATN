@@ -1,10 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 using TECH.Areas.Admin.Models;
 using TECH.Areas.Admin.Models.Search;
 using TECH.Data.DatabaseEntity;
@@ -28,11 +22,13 @@ namespace TECH.Service
         void Save();
         int GetCount();
         List<PhongModelView> GetAll();
+        LoaiPhongChiTiet GetLoaiPhongChiTietById(int id);
     }
 
     public class PhongService : IPhongService
     {
         private readonly IPhongRepository _phongRepository;
+        private readonly ILoaiPhongChiTietRepository _loaiPhongChiTietRepository;
         private IUnitOfWork _unitOfWork;
         public PhongService(IPhongRepository phongRepository,
             IUnitOfWork unitOfWork)
@@ -51,6 +47,10 @@ namespace TECH.Service
                 return true;
             }
             return false;
+        }
+        public LoaiPhongChiTiet GetLoaiPhongChiTietById(int id)
+        {
+            return _loaiPhongChiTietRepository.FindById(id);
         }
         public List<PhongModelView> GetAll()
         {
@@ -84,6 +84,7 @@ namespace TECH.Service
                     HinhAnh = data.HinhAnh,
                     TinhTrang = data.TinhTrang,
                     DonGiaStr = data.DonGia.HasValue && data.DonGia.Value > 0 ? data.DonGia.Value.ToString("#,###") : "",
+                    MaLoaiPhongChiTiet = data.LoaiPhongChiTietId
                 };
                 return model;
             }
@@ -107,7 +108,8 @@ namespace TECH.Service
                     HinhAnh = c.HinhAnh,
                     TinhTrang = c.TinhTrang,
                     DonGiaStr = c.DonGia.HasValue && c.DonGia.Value > 0 ? c.DonGia.Value.ToString("#,###"):"",
-                    TinhTrangStr = Common.GetTinhTrangPhong(c.TinhTrang.Value)
+                    TinhTrangStr = Common.GetTinhTrangPhong(c.TinhTrang.Value),
+                    MaLoaiPhongChiTiet = c.LoaiPhongChiTietId
                 }).ToList();
 
                 return data;

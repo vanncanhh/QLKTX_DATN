@@ -42,7 +42,8 @@
                 html += "<td>" + item.ChieuRong   + "</td>";
                 html += "<td>" + item.DonGiaStr + "</td>";
                 html += "<td>" + item.LoaiPhongStr + "</td>";
-                html += "<td>" + item.TinhTrangStr + "</td>";               
+                html += "<td>" + item.TinhTrangStr + "</td>";    
+                html += `<td><button class="btn btn-info btn-view-khach" data-id="${item.Id}">Xem khách</button></td>`;
                 html += "</tr>";
             }
         }
@@ -128,4 +129,33 @@
         });
        
     })
+
+    $(document).on('click', '.btn-view-khach', function () {
+        var phongId = $(this).data('id');
+        $.ajax({
+            url: '/Admin/Phong/GetKhachThueByPhong',
+            type: 'GET',
+            data: { phongId: phongId },
+            success: function (res) {
+                if (res.success) {
+                    var html = '';
+                    res.data.forEach((item, index) => {
+                        html += `<tr>
+                        <td>${index + 1}</td>
+                        <td>${item.Ten}</td>
+                        <td>${item.SoDienThoai}</td>
+                        <td>${item.Email}</td>
+                        <td>${item.NgayBatDau}</td>
+                        <td>${item.NgayKetThuc}</td>
+                    </tr>`;
+                    });
+                    $('#tableKhachThueBody').html(html);
+                    $('#modalKhachThue').modal('show');
+                } else {
+                    alert('Không có khách thuê nào!');
+                }
+            }
+        });
+    });
+
 })(jQuery);

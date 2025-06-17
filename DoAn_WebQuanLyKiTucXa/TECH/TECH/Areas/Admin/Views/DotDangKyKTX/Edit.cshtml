@@ -1,0 +1,35 @@
+﻿@model TECH.Areas.Admin.Models.DotDangKyKTXModelView
+@{
+    ViewData["Title"] = "Chỉnh sửa đợt đăng ký";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<div class="card">
+    <div class="card-header"><h4>Chỉnh sửa đợt đăng ký</h4></div>
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="TenDot"></label>
+                <input asp-for="TenDot" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="ThoiGianBatDau"></label>
+                <input asp-for="ThoiGianBatDau" type="datetime-local" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="ThoiGianKetThuc"></label>
+                <input asp-for="ThoiGianKetThuc" type="datetime-local" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="MoTa"></label>
+                <textarea asp-for="MoTa" class="form-control"></textarea>
+            </div>
+            <div class="form-check mt-2">
+                <input asp-for="TrangThai" class="form-check-input" />
+                <label asp-for="TrangThai" class="form-check-label">Đang mở?</label>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Cập nhật</button>
+            <a asp-action="Index" class="btn btn-secondary mt-3">Hủy</a>
+        </form>
+    </div>
+</div>

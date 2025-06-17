@@ -230,6 +230,12 @@
     border-color: red;
 }
 </style>
+@if (!string.IsNullOrEmpty(Model.ThongBaoDangKy))
+{
+    <div class="alert @(Model.DotDangKyDangMo ? "alert-success" : "alert-warning")" role="alert" style="font-size: 16px;">
+        @Model.ThongBaoDangKy
+    </div>
+}
 <input type="hidden" class="product-id" value="@Model.Id" />
 <div class="product-detail custom-height">
     <section class="ftco-section">
@@ -238,7 +244,6 @@
 
                 <ul>
                     <li><a title="Shop hoa tươi 360 | Dịch vụ điện hoa uy tín hoatuoi360.vn" href="/">Trang chủ</a></li>
-                    @*  <li><a href="/hoa-giang-sinh/">Hoa giáng sinh</a></li>*@
                 </ul>
                 <div class="clear"></div>
             </div>
@@ -249,10 +254,8 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="m-i2-cpd box-uof-img">
-                                       @* <img style="width: 100%; height: 466px;" src="/product-image/@Model.ImageModelView[0].name" class=" ls-is-cached lazyloaded" />*@
                                         @if (!string.IsNullOrEmpty(Model.HinhAnh))
                                         {
-                                           @* <img width="234" height="234" class=" ls-is-cached lazyloaded" src="/category-image/@itemProduct.HinhAnh">*@
 
                                             <img style="width: 100%; height: 466px;" src="/category-image/@Model.HinhAnh" class=" ls-is-cached lazyloaded" />
                                         }
@@ -260,32 +263,11 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
-                                  @*  <input type="hidden" value="@(Model.price_sell.HasValue && Model.price_sell.Value > 0 ? Model.price_sell.Value:0)" class="product-price" />*@
                                     <div class="b-s-1 bg-shadow">
-                                       @* <h4 class="tt-prod NoneMB">@Model.TenPhong</h4>*@
-                                        @*<h2 class="price-prod NoneMB">
-                                            @{
-                                                string priceStr = "";
-                                                string price_reducedstr = "";
-                                                if (Model.price_sell.HasValue && Model.price_sell.Value > 0)
-                                                {
-                                                    priceStr = Model.price_sell.Value.ToString("#,###");
-                                                }
-                                                if (Model.price_reduced.HasValue && Model.price_reduced.Value > 0)
-                                                {
-                                                    price_reducedstr = Model.price_reduced.Value.ToString("#,###");
-                                                }
-
-                                            }
-                                            @priceStr đ
-                                        </h2>*@
-                                        @*<h2 class="price-prod2 NoneMB"><strike>@price_reducedstr đ</strike></h2>*@
                                         <input type="hidden" value="@Model.MaNha" id="manha" />
                                         <input type="hidden" value="@Model.Id" id="maphong" />
-                                        @*<input type="hidden" value="@user.Id" id="makhachhang" />*@
                                         <p class="txt-title-danh-muc">
                                             <span class="danh-muc-lable" style="font-weight: bold;">TÊN PHÒNG  <h4 class="tt-prod NoneMB">@Model.TenPhong</h4></span>
-                                            @*<span class="danh-muc-name"> @Model.TenPhong</span>*@
                                         </p>
                                         <p class="txt-title-danh-muc">
                                             <span class="danh-muc-lable">Tên Nhà: </span>
@@ -304,70 +286,75 @@
                                             <span class="danh-muc-name" style="color:red"> @Model.DonGiaStr đ</span>
                                         </p>
                                         <p class="txt-title-danh-muc">
-                                            <span class="danh-muc-lable">Tình trạng: </span>
-                                            <span class="danh-muc-name"> @Model.TinhTrangStr </span>
+                                            <span class="danh-muc-lable">Trạng thái: </span>
+                                            <span class="danh-muc-name">
+                                                @if (Model.PhongDaDay)
+                                                {
+                                                    <span class="badge bg-danger">Đã đầy</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-success">Còn trống @Model.SlotConLai chỗ</span>
+                                                }
+                                            </span>
                                         </p>
-                                       @* @if (Model.SizesModelView != null && Model.SizesModelView.Count > 0)
+
+                                        @if (Model.LoaiPhongChiTiet != null)
                                         {
-                                            int step = 0;
-                                            <div class="choosesize ">
-                                                <p>Chọn size: </p>
-                                                <ul class="ulsize">
-                                                    @foreach (var itemSize in Model.SizesModelView)
-                                                    {
-                                                        if(step == 0){
-                                                            <li onclick="AddSize(@itemSize.id,this)" class="sizes tick" data-size="@itemSize.id">@itemSize.name</li>
-                                                        }else{
-                                                            <li onclick="AddSize(@itemSize.id,this)" class="sizes" data-size="@itemSize.id">@itemSize.name</li>
-                                                        }
-                                                        step++;
-                                                    }
-                                                </ul>
-                                            </div>
-                                        }*@
-                                        
-
-                                        @*<div class="input-group box-quantity">
-                                            <span class="input-group-btn mr-2" style="margin: 0px !important;">
-                                                <button type="button" data-type="minus" data-field="" class="quantity-left-minus minus btn">
-                                                    <i class="ion-ios-remove">-</i>
-                                                </button>
-                                            </span>
-                                            <input type="number" min="1" value="1" id="quantity" class="form-control input-number" oninput="this.value = !!this.value && Math.abs(this.value) >= 1 ? Math.abs(this.value) : 1" style="padding: 0px 10px; flex: unset;min-width: 100px;">
-                                            <span class="input-group-btn ml-2" style="margin: 0px !important;">
-                                                <button type="button" data-type="plus" class="quantity-right-plus btn plus">
-                                                    <i class="ion-ios-add">+</i>
-                                                </button>
-                                            </span>
-                                        </div>*@
-
-                                        @*<div class="sub_desc">
-                                            <p>
-                                                <a>1.</a>&nbsp;Tặng miễn phí banner, thiệp (trị giá 20.000đ)
+                                            <p class="txt-title-danh-muc">
+                                                <span class="danh-muc-lable">Loại giường: </span>
+                                                <span class="danh-muc-name"> @Model.LoaiPhongChiTiet.LoaiGiuong</span>
                                             </p>
-                                            <p>
-                                                <a>2.</a><span>&nbsp;Giao hàng trên toàn quốc</span>
+                                            <p class="txt-title-danh-muc">
+                                                <span class="danh-muc-lable">Điều hòa: </span>
+                                                <span class="danh-muc-name"> @(Model.LoaiPhongChiTiet.CoDieuHoa ? "Có" : "Không")</span>
                                             </p>
-                                            <p>
-                                                <a>3.</a>&nbsp;Giao gấp trong 2h
+                                            <p class="txt-title-danh-muc">
+                                                <span class="danh-muc-lable">Phòng dịch vụ: </span>
+                                                <span class="danh-muc-name"> @(Model.LoaiPhongChiTiet.LaPhongDichVu ? "Có" : "Không")</span>
                                             </p>
-                                            <p>
-                                                <a>4.</a>&nbsp;Cam kết hàng chất lượng
+                                            <p class="txt-title-danh-muc">
+                                                <span class="danh-muc-lable">Sức chứa: </span>
+                                                <span class="danh-muc-name"> @Model.LoaiPhongChiTiet.SoLuongNguoi người</span>
                                             </p>
-
-                                        </div>*@
-                                        @if (Model.TinhTrang == 1)
-                                        {
-                                            <a href="javascript:void(0)" class="btn btn-black py-3 px-5 btn-block btn-add-cart" style="color: #fff;font-weight: bold;    margin-top: 50px;">
-                                            ĐẶT PHÒNG <i class="ion-ios-add ml-1"></i>
-                                        </a>
+                                            <p class="txt-title-danh-muc">
+                                                <span class="danh-muc-lable">Hiện đang có: </span>
+                                                <span class="danh-muc-name"> @Model.SoNguoiDangThue người</span>
+                                            </p>
+                                            <p class="txt-title-danh-muc">
+                                                <span class="danh-muc-lable">Còn trống: </span>
+                                                <span class="danh-muc-name text-@(Model.PhongDaDay ? "danger" : "success")">
+                                                    @(Model.PhongDaDay ? "ĐÃ ĐẦY" : $"{Model.SlotConLai} chỗ")
+                                                </span>
+                                            </p>
                                         }
-                                        @*<h4 class="gt-tt">Gọi điện thoại đặt mua: <span>0936 65 27 27 - 0977 301 303</span></h4>
-                                        <div class="tt-2prod">
-                                        <ul>
-                                        <li>Giao hàng trên toàn quốc</li>
-                                        <li>Giao nhanh <strong>sau 2h đặt hàng</strong></li>
-                                        </ul>*@
+                                        @if (Model.DotDangKyDangMo)
+                                        {
+                                            if (Model.DaDangKyPhong)
+                                            {
+                                                <button class="btn btn-warning py-3 px-5 btn-block" disabled style="font-weight: bold; margin-top: 20px;">
+                                                    BẠN ĐÃ ĐĂNG KÝ PHÒNG NÀY
+                                                </button>
+                                            }
+                                            else if (Model.PhongDaDay)
+                                            {
+                                                <button class="btn btn-secondary py-3 px-5 btn-block" disabled style="font-weight: bold; margin-top: 20px;">
+                                                    PHÒNG ĐÃ ĐẦY
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <a href="javascript:void(0)" class="btn btn-black py-3 px-5 btn-block btn-add-cart" style="color: #fff; font-weight: bold; margin-top: 20px;">
+                                                    ĐẶT PHÒNG <i class="ion-ios-add ml-1"></i>
+                                                </a>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-secondary py-3 px-5 btn-block" disabled style="font-weight: bold; margin-top: 20px;">
+                                                CHƯA ĐẾN THỜI GIAN ĐĂNG KÝ
+                                            </button>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -585,5 +572,15 @@
         }
 
 
+    </script>
+    <script>
+        setTimeout(function () {
+            var alertBox = document.querySelector(".alert");
+            if (alertBox) {
+                alertBox.style.transition = "opacity 0.5s ease";
+                alertBox.style.opacity = 0;
+                setTimeout(() => alertBox.remove(), 500);
+            }
+        }, 5000); // 5 giây
     </script>
 }

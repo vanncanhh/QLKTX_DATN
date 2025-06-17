@@ -48,6 +48,8 @@ builder.Services.AddScoped<ITheKiTucXaRepository, TheKiTucXaRepository>();
 builder.Services.AddScoped<ILoaiThietBiRepository, LoaiThietBiRepository>();
 builder.Services.AddScoped<IThietBiRepository, ThietBiRepository>();
 builder.Services.AddScoped<IThietBiPhongRepository, ThietBiPhongRepository>();
+builder.Services.AddScoped<ILoaiPhongChiTietRepository, LoaiPhongChiTietRepository>();
+builder.Services.AddScoped<IDotDangKyKTXRepository, DotDangKyKTXRepository>();
 
 builder.Services.AddScoped<ITheKiTucXaService, TheKiTucXaService>();
 builder.Services.AddScoped<ILoiPhamService, LoiPhamService>();
@@ -66,6 +68,8 @@ builder.Services.AddScoped<IQuanHuyenService, QuanHuyenService>();
 builder.Services.AddScoped<IPhuongXaService, PhuongXaService>();
 builder.Services.AddScoped<IThietBiService, ThietBiService>();
 builder.Services.AddSingleton<IVnpay, Vnpay>();
+builder.Services.AddScoped<IDotDangKyKTXService, DotDangKyKTXService>();
+builder.Services.AddScoped<ILoaiPhongChiTietService, LoaiPhongChiTietService>();
 
 //builder.Services.AddMemoryCache();
 
@@ -146,6 +150,12 @@ app.UseEndpoints(endpoints =>
    areaName: "Admin",
    pattern: "admin/tao-moi-phong",
    defaults: new { controller = "Phong", action = "AddView" });
+   
+    endpoints.MapAreaControllerRoute(
+   name: "LichDangKy",
+   areaName: "Admin",
+   pattern: "admin/lich-dang-ky",
+   defaults: new { controller = "DotDangKyKTX", action = "Index" });
 
     endpoints.MapAreaControllerRoute(
   name: "TaoPhong",

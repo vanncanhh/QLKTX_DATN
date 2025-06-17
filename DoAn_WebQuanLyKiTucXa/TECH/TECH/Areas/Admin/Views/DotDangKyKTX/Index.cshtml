@@ -1,0 +1,68 @@
+﻿@model List<TECH.Areas.Admin.Models.DotDangKyKTXModelView>
+@{
+    ViewData["Title"] = "Quản lý đợt đăng ký KTX";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<section class="section pay-bill">
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6">Danh sách đợt đăng ký</div>
+                <div class="col-md-6">
+                    <a class="btn btn-primary" style="float:right" asp-action="Create">
+                        <i class="bi bi-plus-circle"></i> Thêm đợt đăng ký
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên đợt</th>
+                        <th>Thời gian</th>
+                        <th>Trạng thái</th>
+                        <th style="text-align:center">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        int index = 1;
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@index</td>
+                                <td>@item.TenDot</td>
+                                <td>
+                                    @item.ThoiGianBatDau.ToString("dd/MM/yyyy HH:mm") -
+                                    @item.ThoiGianKetThuc.ToString("dd/MM/yyyy HH:mm")
+                                </td>
+                                <td>
+                                    @if (item.TrangThai)
+                                    {
+                                        <span class="badge bg-success">Đang mở</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Đã đóng</span>
+                                    }
+                                </td>
+                                <td style="text-align:center">
+                                    <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.Id">Sửa</a>
+                                    <a class="btn btn-sm btn-warning" asp-action="ToggleTrangThai" asp-route-id="@item.Id">Đóng/Mở</a>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="5">Không có đợt đăng ký nào.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

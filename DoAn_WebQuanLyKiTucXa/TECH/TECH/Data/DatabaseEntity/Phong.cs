@@ -30,5 +30,9 @@ namespace TECH.Data.DatabaseEntity
         public string? HinhAnh { get; set; }
         public int? LoaiPhong { get; set; }
         public int? TinhTrang { get; set; }
+        public int? LoaiPhongChiTietId { get; set; }
+
+        [ForeignKey("LoaiPhongChiTietId")]
+        public virtual LoaiPhongChiTiet? LoaiPhongChiTiet { get; set; }
     }
 }

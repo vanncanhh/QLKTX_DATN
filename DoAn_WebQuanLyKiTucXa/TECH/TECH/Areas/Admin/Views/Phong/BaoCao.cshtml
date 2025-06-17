@@ -89,6 +89,7 @@
                                 <th>Đơn Giá</th>
                                 <th>Loại Phòng</th>
                                 <th>Tình Trạng</th>
+                                <th>Khách thuê</th>
                             </tr>
                         </thead>
                         <tbody id="tblData">                            
@@ -105,6 +106,35 @@
         </div>
     </section>
 </div>
+<div class="modal fade" id="modalKhachThue" tabindex="-1" aria-labelledby="modalKhachThueLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title text-white" id="modalKhachThueLabel">Danh sách khách thuê</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên khách</th>
+                            <th>SĐT</th>
+                            <th>Email</th>
+                            <th>Ngày bắt đầu</th>
+                            <th>Ngày kết thúc</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableKhachThueBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts{
                <script src="~/admin/baocao/baocao.js?v=@DateTime.Now.Ticks"></script>
     }
