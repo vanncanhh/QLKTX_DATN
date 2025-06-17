@@ -194,13 +194,23 @@
                                         <p class="custom-p">Đơn giá    : @item.DonGiaStr</p>
                                         <p class="custom-p">Số người đã thuê   : @item.SoNguoiDangThue</p>
                                         <p class="custom-p" style="font-weight: bold;">
-                                            @if (item.PhongDaDay)
+                                            @if(item.TinhTrang == 1){
+                                                <span style="color:green">Phòng trống</span>
+                                            }
+                                            else if(item.TinhTrang == 2)
                                             {
-                                                <span style="color:red">Đã đầy</span>
+                                                if (item.PhongDaDay)
+                                                {
+                                                    <span style="color:red">Đã đầy</span>
+                                                }
+                                                else
+                                                {
+                                                    <span style="color:green">Còn trống: @item.SlotConLai chỗ</span>
+                                                }
                                             }
                                             else
                                             {
-                                                <span style="color:green">Còn trống: @item.SlotConLai chỗ</span>
+                                                <span style="color:red">Đã đầy</span>
                                             }
                                         </p>
                                         <button class="btn btn-info btn-custom-eidt" onClick="Update(@item.Id)" type="button">Chỉnh sửa</button>
@@ -235,10 +245,6 @@
         </form>
     </div>
 </div>
-
-
-
-
 <partial name="AddOrUpdate" />
 <partial name="AddFast" />
 <partial name="AddDichVu" />

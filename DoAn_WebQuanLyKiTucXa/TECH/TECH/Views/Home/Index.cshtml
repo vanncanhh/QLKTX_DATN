@@ -5,6 +5,14 @@
     ViewData["Title"] = "Home Page";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@if (TempData["Message"] != null)
+{
+    <div class="alert @(TempData["Message"].ToString().Contains("thất bại") ? "alert-danger" : "alert-success") alert-dismissible fade show" role="alert">
+        @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 <style>
     .titlehome{
         margin: 20px 0px;

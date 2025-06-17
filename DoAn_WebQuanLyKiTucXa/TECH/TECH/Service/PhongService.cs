@@ -200,7 +200,7 @@ namespace TECH.Service
                     //dataServer.MaNha = view.MaNha;
                     dataServer.TenPhong = view.TenPhong;
                     dataServer.DonGia = view.DonGia;
-                    dataServer.SLNguoiMax = view.SLNguoiMax;
+                    dataServer.SLNguoiMax = dataServer.SLNguoiMax;
                     dataServer.ChieuDai = view.ChieuDai;
                     dataServer.ChieuRong = view.ChieuRong;
                     dataServer.MoTa = view.MoTa;

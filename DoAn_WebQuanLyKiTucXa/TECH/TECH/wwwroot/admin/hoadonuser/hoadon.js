@@ -524,7 +524,8 @@
                         data: {
                             nguoiDong: nguoidong,
                             tienDong: tiendong,
-                            ghiChu: ghichu
+                            ghiChu: ghichu,
+                            hoaDonId: $("#mahoadonhidden").val()
                         },
                         success: function (url) {
                             window.location.href = url;
