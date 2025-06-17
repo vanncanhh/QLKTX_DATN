@@ -43,25 +43,23 @@ namespace TECH.Controllers
         {
             var userString = _httpContextAccessor.HttpContext.Session.GetString("UserInfor");
             var user = new UserMapModelView();
+
             if (!string.IsNullOrEmpty(userString))
             {
                 user = JsonConvert.DeserializeObject<UserMapModelView>(userString);
-                HopDongViewModelSearch phongViewModelSearch = new HopDongViewModelSearch()
+                var allHopDong = _hopDongService.GetAll().Where(hd =>
+                    hd.MaKH == user.Id && hd.IsDeteled == false).ToList();
+
+                foreach (var item in allHopDong)
                 {
-                    PageSize = 1,
-                    PageIndex = 1,
-                    maKH = user?.Id
-                };
-                var data = _hopDongService.GetAllPaging(phongViewModelSearch);
-                foreach (var item in data.Results)
-                {
-                    if (item.MaNha.HasValue && item.MaNha.Value > 0)
-                    {
-                        item.TenNha = _nhaService.GetByid(item.MaNha.Value)?.TenNha;
-                    }
                     if (item.MaPhong.HasValue && item.MaPhong.Value > 0)
                     {
-                        item.TenPhong = _phongService.GetByid(item.MaPhong.Value)?.TenPhong;
+                        var phong = _phongService.GetByid(item.MaPhong.Value);
+                        item.TenPhong = phong?.TenPhong;
+                        if (phong?.MaNha != null && phong.MaNha > 0)
+                        {
+                            item.TenNha = _nhaService.GetByid(phong.MaNha.Value)?.TenNha;
+                        }
                     }
                     if (item.MaKH.HasValue && item.MaKH.Value > 0)
                     {
@@ -76,22 +74,12 @@ namespace TECH.Controllers
                         item.TrangThaiStr = Common.GetTinhTrangHoaDon(item.TrangThai.Value);
                     }
                 }
-                if (phongViewModelSearch != null && !string.IsNullOrEmpty(phongViewModelSearch.name))
-                {
-                    data.Results = data.Results.Where(p => p.TenNha.Contains(phongViewModelSearch.name) ||
-                    p.TenPhong.Contains(phongViewModelSearch.name) ||
-                    p.TenKhachHang.Contains(phongViewModelSearch.name) ||
-                    p.TenNhanVien.Contains(phongViewModelSearch.name)).ToList();
-                }
-                if (phongViewModelSearch.status > 0)
-                {
-                    data.Results = data.Results.Where(p => p.TrangThai == phongViewModelSearch.status).ToList();
-                }
-                return View(data.Results.ToList());
+
+                return View(allHopDong);
             }
-           
+
             return Redirect("/");
-        }      
+        }
 
         [HttpGet]
         public JsonResult GetById(int id)

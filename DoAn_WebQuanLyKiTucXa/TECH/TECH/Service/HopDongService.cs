@@ -20,6 +20,7 @@ namespace TECH.Service
         int GetCount();
 
         HopDongModelView GetHopDongByPhong(int maPhong);
+        List<HopDongModelView> GetAll();
     }
 
     public class HopDongService : IHopDongService
@@ -40,7 +41,31 @@ namespace TECH.Service
             _phongRepository = phongRepository;
             _khachHangRepository = khachHangRepository;
             _unitOfWork = unitOfWork;
-        }   
+        }
+        public List<HopDongModelView> GetAll()
+        {
+            var data = _hopDongRepository.FindAll(p => p.IsDeteled != true)
+                .OrderByDescending(p => p.Id)
+                .Select(p => new HopDongModelView()
+                {
+                    Id = p.Id,
+                    MaPhong = p.MaPhong,
+                    MaNV = p.MaNV,
+                    MaKH = p.MaKH,
+                    MaNha = p.MaNha,
+                    NgayBatDau = p.NgayBatDau,
+                    NgayKetThuc = p.NgayKetThuc,
+                    TienCoc = p.TienCoc,
+                    GhiChu = p.GhiChu,
+                    TrangThai = p.TrangThai,
+                    IsDeteled = p.IsDeteled,
+                    NgayBatDauStr = p.NgayBatDau.HasValue ? p.NgayBatDau.Value.ToString("dd/MM/yyyy") : "",
+                    NgayKetThucStr = p.NgayKetThuc.HasValue ? p.NgayKetThuc.Value.ToString("dd/MM/yyyy") : ""
+                }).ToList();
+
+            return data;
+        }
+
         public List<HopDongModelView> GetPhongByHopDong()
         {
             var data = _hopDongRepository.FindAll(p => p.TrangThai == 1 &&p.IsDeteled !=true).Select(p => new HopDongModelView()
