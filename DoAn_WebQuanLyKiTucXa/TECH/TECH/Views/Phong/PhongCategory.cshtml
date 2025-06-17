@@ -232,9 +232,17 @@
                                         {
                                             <img width="234" height="234" class=" ls-is-cached lazyloaded" src="">
                                         }*@
-                                        @if (!string.IsNullOrEmpty(item.TinhTrangStr))
+                                        @if (item.DaDangKyPhong)
                                         {
-                                            <div class="trang-thai-phong"><span>@item.TinhTrangStr</span></div>
+                                            <div class="trang-thai-phong"><span>Đã thuê</span></div>
+                                        }
+                                        else if (item.PhongDaDay)
+                                        {
+                                            <div class="trang-thai-phong"><span>Đã đầy</span></div>
+                                        }
+                                        else
+                                        {
+                                            <div class="trang-thai-phong"><span>Trống</span></div>
                                         }
                                         @if (!string.IsNullOrEmpty(item.LoaiPhongStr))
                                         {

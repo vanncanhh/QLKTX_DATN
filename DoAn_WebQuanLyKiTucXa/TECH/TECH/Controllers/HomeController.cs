@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Diagnostics;
 using TECH.Areas.Admin.Models;
 using TECH.Areas.Admin.Models.Search;
@@ -15,11 +16,15 @@ namespace TECH.Controllers
         private readonly IPhongService _phongService;
         private readonly INhaService _nhaService;
         private readonly IDichVuService _dichVuService;
-        public HomeController(IPhongService phongService, INhaService nhaService, IDichVuService dichVuService)
+        private readonly IHopDongService _hopDongService;
+        public IHttpContextAccessor _httpContextAccessor;
+        public HomeController(IPhongService phongService, INhaService nhaService, IDichVuService dichVuService, IHttpContextAccessor httpContextAccessor, IHopDongService hopDongService)
         {
             _phongService = phongService;
             _nhaService = nhaService;
             _dichVuService = dichVuService;
+            _httpContextAccessor = httpContextAccessor;
+            _hopDongService = hopDongService;
         }
 
         public IActionResult Index()
@@ -32,8 +37,22 @@ namespace TECH.Controllers
             var data = _phongService.GetAllPaging(phongViewModelSearch);
             if (data != null && data.Results != null && data.Results.Count > 0)
             {
+                var userString = _httpContextAccessor.HttpContext.Session.GetString("UserInfor");
+                UserMapModelView userMap = null;
+                if (!string.IsNullOrEmpty(userString))
+                {
+                    userMap = JsonConvert.DeserializeObject<UserMapModelView>(userString);
+                }
                 foreach (var item in data.Results)
                 {
+                    if (userMap != null)
+                    {
+                        var danhSachHopDong = _hopDongService.GetPhongByHopDong()
+                            .Where(x => x.MaPhong == item.Id && x.MaKH == userMap.Id && (x.IsDeteled != true))
+                            .ToList();
+
+                        item.DaDangKyPhong = danhSachHopDong.Any();
+                    }
                     if (item.MaNha.HasValue && item.MaNha.Value > 0)
                     {
                         var nha = _nhaService.GetByid(item.MaNha.Value);

@@ -13,14 +13,12 @@ namespace TECH.Controllers
         private readonly IDotDangKyKTXService _dotDangKyService;
         private readonly IHopDongService _hopDongService;
         private readonly ILoaiPhongChiTietService _loaiPhongChiTietService;
-        private readonly IKhachHangService _khachHangService;
         public IHttpContextAccessor _httpContextAccessor;
         public PhongController(IPhongService phongService,
             IHttpContextAccessor httpContextAccessor,
             INhaService nhaService,
             IDotDangKyKTXService dotDangKyService,
             IHopDongService hopDongService,
-            IKhachHangService khachHangService,
             ILoaiPhongChiTietService loaiPhongChiTietService
             )
         {
@@ -30,7 +28,6 @@ namespace TECH.Controllers
             _dotDangKyService = dotDangKyService;
             _loaiPhongChiTietService = loaiPhongChiTietService;
             _hopDongService = hopDongService;
-            _khachHangService = khachHangService;
         }
 
         public IActionResult PhongCategory(int categoryId)
@@ -42,9 +39,24 @@ namespace TECH.Controllers
             var data = _phongService.GetAllPaging(productViewModelSearch);
             if (data != null && data.Results != null && data.Results.Count > 0)
             {
+                var userString = _httpContextAccessor.HttpContext.Session.GetString("UserInfor");
+                UserMapModelView userMap = null;
+                if (!string.IsNullOrEmpty(userString))
+                {
+                    userMap = JsonConvert.DeserializeObject<UserMapModelView>(userString);
+                }
                 //data.Results = data.Results.Where(p => p.ishidden != 1).ToList();
                 foreach (var item in data.Results)
                 {
+                    if (userMap != null)
+                    {
+                        var danhSachHopDong = _hopDongService.GetPhongByHopDong()
+                            .Where(x => x.MaPhong == item.Id && x.MaKH == userMap.Id && (x.IsDeteled != true))
+                            .ToList();
+
+                        item.DaDangKyPhong = danhSachHopDong.Any();
+                    }
+
                     if (item.MaNha.HasValue && item.MaNha.Value > 0)
                     {
                         var category = _nhaService.GetByid(item.MaNha.Value);

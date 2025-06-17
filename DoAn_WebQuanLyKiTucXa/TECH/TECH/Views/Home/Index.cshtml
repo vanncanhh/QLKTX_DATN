@@ -385,9 +385,16 @@
                                                 <div class="product-item">
                                                     <a href="/chi-tiet-phong/@itemProduct.Id">
                                                     <div class="images custom-image-status">
-                                            @if (!string.IsNullOrEmpty(itemProduct.TinhTrangStr))
+                                            @if (itemProduct.DaDangKyPhong)
                                             {
-                                                <div class="trang-thai-phong"><span>@itemProduct.TinhTrangStr</span></div>
+                                                <div class="trang-thai-phong"><span>Đã thuê</span></div>
+                                            }
+                                            else if (itemProduct.PhongDaDay)
+                                            {
+                                                <div class="trang-thai-phong"><span>Đã đầy</span></div>
+                                            }
+                                            else{
+                                                <div class="trang-thai-phong"><span>Trống</span></div>
                                             }
                                              @if (!string.IsNullOrEmpty(itemProduct.LoaiPhongStr))
                                             {

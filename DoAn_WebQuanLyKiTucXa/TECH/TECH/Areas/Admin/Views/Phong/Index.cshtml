@@ -194,7 +194,7 @@
                                         <p class="custom-p">Đơn giá    : @item.DonGiaStr</p>
                                         <p class="custom-p">Số người đã thuê   : @item.SoNguoiDangThue</p>
                                         <p class="custom-p" style="font-weight: bold;">
-                                            @if(item.TinhTrang == 1){
+                                            @if(item.TinhTrang == 1 && !item.PhongDaDay){
                                                 <span style="color:green">Phòng trống</span>
                                             }
                                             else if(item.TinhTrang == 2)
